@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <div>
       <div>
         <div>
@@ -16,15 +16,7 @@
         </div>
       </div>
       <div class="mt-3">
-        <b-table
-          responsive
-          fixed
-          outlined
-          foot-clone
-          :items="tableData"
-          :fields="fields"
-          :key="tblKey"
-        >
+        <b-table responsive outlined foot-clone :items="tableData" :fields="fields" :key="tblKey">
           <template v-slot:cell(day)="row">
             <div
               v-if="typeof (month) === 'object'"
@@ -77,8 +69,12 @@ import store from "../store/index";
 import VueMonthlyPicker from "vue-monthly-picker";
 import { BTableSimple } from "bootstrap-vue";
 import api from "../api/api";
+import { mapGetters } from "vuex";
 
 export default {
+  props: {
+    id: Number,
+  },
   components: {
     VueMonthlyPicker,
     BTableSimple,
@@ -132,6 +128,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["isAdmin"]),
     daysOfMonth() {
       var date = new Date(this.month);
       var dd = String(date.getDate()).padStart(2, "0");
@@ -163,6 +160,9 @@ export default {
     },
   },
   mounted() {
+    if (this.id == null) {
+      this.id = this.$store.state.user.id;
+    }
     if (this.$store.state.user != null) {
       this.getData();
       this.getWorkPlaces();
@@ -200,7 +200,7 @@ export default {
     getTimeSheet() {
       //console.log("getTimeSheet");
       api
-        .getTimeSheet(this.yNumber, this.mNumber, this.$store.state.user.id)
+        .getTimeSheet(this.yNumber, this.mNumber, this.id)
         .then((response) => {
           this.timeSheet = response.data;
           this.timeSheet.forEach((time) => {
@@ -229,12 +229,7 @@ export default {
         this.editedRow.to == ""
       ) {
         api
-          .deleteTimeSheet(
-            this.$store.state.user.id,
-            this.yNumber,
-            this.mNumber,
-            r.index
-          )
+          .deleteTimeSheet(this.id, this.yNumber, this.mNumber, r.index)
           .then((response) => {
             console.log("Data deleted: " + response.data);
           })
@@ -244,7 +239,7 @@ export default {
       } else {
         api
           .postTimeSheet(
-            this.$store.state.user.id,
+            this.id,
             r.from,
             r.to,
             r.place.id,
