@@ -4,7 +4,15 @@ import router from "./router";
 import store from "./store";
 import { FormPlugin } from "bootstrap-vue";
 import { ButtonPlugin } from 'bootstrap-vue'
+import { TablePlugin } from 'bootstrap-vue'
+import vSelect from "vue-select";
+import 'vue-select/dist/vue-select.css';
+import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
 
+Vue.component("v-select", vSelect);
+Vue.component("vue-timepicker", VueTimepicker)
+Vue.use(VueTimepicker)
+Vue.use(TablePlugin)
 Vue.use(ButtonPlugin)
 Vue.use(FormPlugin);
 

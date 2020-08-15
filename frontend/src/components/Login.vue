@@ -6,7 +6,7 @@
         <b-form-input :state="validation" v-model="userName" @input="checkUser"></b-form-input>
         <b-form-invalid-feedback>Nincs ilyen felhasználó</b-form-invalid-feedback>
       </b-form-group>
-      <b-form-group id="name" label="Jelszó" label-for="name">
+      <b-form-group id="pass" label="Jelszó" label-for="pass">
         <b-form-input type="password" v-model="password"></b-form-input>
       </b-form-group>
       <button class="btn btn-dark" @click="login" :disabled="!validation || password==''">Belépés</button>
@@ -35,13 +35,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user"]),
+    ...mapGetters(["user", "isAdmin"]),
   },
   mounted() {
     this.authUser({ user: null });
   },
   methods: {
-    ...mapActions(["authUser"]),
+    ...mapActions(["authUser", "setEmployees"]),
     checkUser() {
       api
         .doesUserExist(this.userName)
@@ -57,11 +57,32 @@ export default {
         .getUserData(this.userName, this.password)
         .then((response) => {
           this.authUser({ user: response.data });
-          this.$router.push({ name: "Attendance" });
+          if (this.isAdmin) {
+            this.getEmployees();
+            this.$router.push({ name: "Employees" });
+          } else {
+            this.$router.push({ name: "Attendance" });
+          }
         })
         .catch((error) => {
           console.log(error);
           alert("Hibás adatok");
+        });
+    },
+    getEmployees() {
+      api
+        .getAllUsers()
+        .then((response) => {
+          var employees = new Array();
+          response.data.forEach((employee) => {
+            if (!employee.role) {
+              employees.push(employee);
+            }
+          });
+          this.setEmployees({ employees });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

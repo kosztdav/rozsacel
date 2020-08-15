@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../components/Login.vue";
 import Attendance from "../components/AttendanceSheet.vue";
+import Settings from "../components/Settings.vue";
+import Employees from "../components/Employees.vue"
 
 Vue.use(VueRouter);
 
@@ -15,6 +17,17 @@ const routes = [
     path: "/jelenlet",
     name: "Attendance",
     component: Attendance
+  },
+  {
+    path: "/beallitasok",
+    name: "Settings",
+    component: Settings
+  },
+  {
+    path: "/dolgozok",
+    name: "Employees",
+    component: Employees
+
   }
 ];
 

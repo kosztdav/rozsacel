@@ -1,17 +1,22 @@
 package com.rozsacel.backend.controller;
 
-
+import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
+import com.rozsacel.backend.domain.WorkPlace;
+import com.rozsacel.backend.dto.AttendanceDto;
 import com.rozsacel.backend.service.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class HomeController {
 
     @Autowired
@@ -41,4 +46,36 @@ public class HomeController {
         return service.getUserData(userName,password);
     }
 
+    @RequestMapping(path = "/getTimeSheet", method = GET, produces = "application/json")
+    @ResponseBody
+    public List<AttendanceDto> getTimeSheet(@RequestParam int year, @RequestParam int month, @RequestParam int userId) {
+        return service.getTimeSheet(year,month,userId);
+    }
+
+    @RequestMapping(path = "/getAllWorkPlaces", method = GET, produces = "application/json")
+    @ResponseBody
+    public List<WorkPlace> getAllWorkPlaces(){
+        return service.getAllWorkPlaces();
+    }
+
+    @RequestMapping(path = "/postAttendance", method = POST, produces = "application/json")
+    @ResponseBody
+    public String postAttendance(@RequestParam int userId, @RequestParam String from, @RequestParam String to, @RequestParam int placeId, @RequestParam int year, @RequestParam int month, @RequestParam int day){
+        service.postAttendance(userId,from,to,placeId,year,month,day);
+        return "OK";
+    }
+
+    @RequestMapping(path = "/deleteAttendance", method = POST, produces = "application/json")
+    @ResponseBody
+    public String deleteAttendance(@RequestParam int userId, @RequestParam int year, @RequestParam int month, @RequestParam int day){
+        service.deleteAttendance(userId,year,month,day);
+        return "OK";
+    }
+
+    @RequestMapping(path = "/changePassword", method = POST, produces = "application/json")
+    @ResponseBody
+    public String changePassword (@RequestParam int userId, @RequestParam String oldPass, @RequestParam String newPass){
+        service.changePassword(userId,oldPass,newPass);
+        return "OK";
+    }
 }
