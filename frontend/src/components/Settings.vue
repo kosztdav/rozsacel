@@ -18,6 +18,7 @@ import store from "../store/index";
 import { BFormGroup } from "bootstrap-vue";
 import { BFormInput } from "bootstrap-vue";
 import api from "../api/api";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -30,10 +31,13 @@ export default {
       newPass: "",
     };
   },
+  computed: {
+    ...mapGetters(["user"]),
+  },
   methods: {
     changePassword() {
       api
-        .changePassword(this.$store.state.user.id, this.oldPass, this.newPass)
+        .changePassword(this.user.id, this.oldPass, this.newPass)
         .then((response) => {
           alert("Jelszó módosítva");
           this.oldPass = "";

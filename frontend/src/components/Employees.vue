@@ -1,9 +1,8 @@
 <template>
   <div class="container">
-    <div>
+    <div class="pb-3">
       <label>Válassz dolgozót</label>
       <v-select :options="employees" v-model="selectedEmployee" label="name" />
-      <hr />
     </div>
     <div v-if="selectedEmployee">
       <AttendanceSheet :id="selectedEmployee.id" :key="selectedEmployee.id" />

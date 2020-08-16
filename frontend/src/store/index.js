@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: null,
-    employees: []
+    employees: [],
+    workPlaces: []
   },
   mutations: {
     storeUser(state, user) {
@@ -14,14 +15,20 @@ export default new Vuex.Store({
     },
     storeEmployees(state, employees) {
       state.employees = employees
+    },
+    storeWorkPlaces(state, places) {
+      state.workPlaces = places
     }
   },
   actions: {
-    async authUser({ commit }, { user }) {
+    authUser({ commit }, { user }) {
       commit("storeUser", user);
     },
-    async setEmployees({ commit }, { employees }) {
+    setEmployees({ commit }, { employees }) {
       commit("storeEmployees", employees);
+    },
+    setWorkPlaces({ commit }, { places }) {
+      commit("storeWorkPlaces", places);
     }
   },
   getters: {
@@ -33,6 +40,9 @@ export default new Vuex.Store({
     },
     employees(state) {
       return state.employees;
+    },
+    workPlaces(state) {
+      return state.workPlaces;
     }
   }
 });

@@ -1,15 +1,30 @@
 <template>
   <div class="pb-3 d-flex justify-content-center">
     <div v-if="!isAdmin">
-      <router-link to="/jelenlet" class="pr-1">
-        <b-button :pressed="pressed" @click="pressed = !pressed">Jelenléti ív</b-button>
-      </router-link>
-      <router-link to="/beallitasok" class="pl-1">
-        <b-button :pressed="!pressed" @click="pressed = !pressed">Beállítások</b-button>
-      </router-link>
+      <b-button-group variant="outline-secondary">
+        <b-button
+          v-for="(btn, idx) in userButtons"
+          :key="idx"
+          :to="btn.to"
+          :pressed="btn.state"
+          @click="btnPressed(idx)"
+          squared
+          variant="outline-dark"
+        >{{ btn.caption }}</b-button>
+      </b-button-group>
     </div>
     <div v-if="isAdmin">
-      <b-button :pressed="true">Dolgozók</b-button>
+      <b-button-group variant="outline-secondary">
+        <b-button
+          v-for="(btn, idx) in adminButtons"
+          :key="idx"
+          :to="btn.to"
+          :pressed="btn.state"
+          @click="adminBtnPressed(idx)"
+          squared
+          variant="outline-dark"
+        >{{ btn.caption }}</b-button>
+      </b-button-group>
     </div>
   </div>
 </template>
@@ -22,11 +37,39 @@ export default {
   components: { BButtonGroup },
   data() {
     return {
-      pressed: true,
+      userButtons: [
+        { caption: "Jelenléti ív", state: true, to: "/jelenlet" },
+        { caption: "Beállítások", state: false, to: "/beallitasok" },
+      ],
+      adminButtons: [
+        { caption: "Jelenléti ív", state: true, to: "/dolgozok" },
+        { caption: "Helyszínek", state: false, to: "/helyszinek" },
+        { caption: "Bérek", state: false, to: "/berek" },
+      ],
     };
   },
   computed: {
     ...mapGetters(["isAdmin"]),
+  },
+  methods: {
+    btnPressed(idx) {
+      for (let i = 0; i < this.userButtons.length; i++) {
+        if (idx == i) {
+          this.userButtons[i].state = true;
+        } else {
+          this.userButtons[i].state = false;
+        }
+      }
+    },
+    adminBtnPressed(idx) {
+      for (let i = 0; i < this.adminButtons.length; i++) {
+        if (idx == i) {
+          this.adminButtons[i].state = true;
+        } else {
+          this.adminButtons[i].state = false;
+        }
+      }
+    },
   },
 };
 </script>

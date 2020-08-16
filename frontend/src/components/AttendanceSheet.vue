@@ -53,7 +53,7 @@
             <i>Összesen</i>
           </template>
           <template v-slot:foot(from)>
-            <i>{{hours}} óra</i>
+            <i>{{hours}}</i>
           </template>
           <template v-slot:foot()>
             <span></span>
@@ -81,9 +81,7 @@ export default {
   },
   data() {
     var today = new Date();
-    var proba = new Date();
     var dd = String(today.getDate()).padStart(2, "0");
-    var mNumber = today.getMonth();
     var mm = String(today.getMonth() + 1).padStart(2, "0");
     var yyyy = today.getFullYear();
     today = mm + "/" + dd + "/" + yyyy;
@@ -93,7 +91,7 @@ export default {
       month: today,
       tblKey: 0,
       editedRow: null,
-      workPlaces: [],
+      userId: null,
       timeSheet: [],
       monthLabels: [
         "Jan",
@@ -128,10 +126,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isAdmin"]),
+    ...mapGetters(["isAdmin", "user", "workPlaces"]),
     daysOfMonth() {
       var date = new Date(this.month);
-      var dd = String(date.getDate()).padStart(2, "0");
       var mm = String(date.getMonth() + 1).padStart(2, "0");
       var yyyy = date.getFullYear();
       var numberOfDays = new Date(yyyy, mm, 0).getDate();
@@ -149,23 +146,43 @@ export default {
     },
     hours() {
       var hours = 0;
+      var minutes = 0;
       this.timeSheet.forEach((row) => {
         var from = new Date();
-        from.setHours(row.from.substring(0, 2));
         var to = new Date();
+        from.setHours(row.from.substring(0, 2));
+        from.setMinutes(row.from.substring(3, 5));
         to.setHours(row.to.substring(0, 2));
+        to.setMinutes(row.to.substring(3, 5));
         hours += to.getHours() - from.getHours();
+        minutes += to.getMinutes() - from.getMinutes();
       });
-      return hours;
+      if (minutes >= 60) {
+        while (minutes >= 60) {
+          minutes -= 60;
+          hours++;
+        }
+      } else if (minutes < 0) {
+        while (minutes < 0) {
+          minutes += 60;
+          hours--;
+        }
+      }
+      if (minutes == 0) {
+        return hours + " óra";
+      }
+      return hours + " óra " + minutes + " perc";
     },
   },
   mounted() {
     if (this.id == null) {
-      this.id = this.$store.state.user.id;
+      this.userId = this.user.id;
+    } else {
+      this.userId = this.id;
     }
-    if (this.$store.state.user != null) {
+
+    if (this.user != null) {
       this.getData();
-      this.getWorkPlaces();
       this.getTimeSheet();
     }
   },
@@ -183,24 +200,10 @@ export default {
       }
       this.tblKey++;
     },
-    getWorkPlaces() {
-      api
-        .getAllWorkPlaces()
-        .then((response) => {
-          response.data.forEach((place) => {
-            if (place.active) {
-              this.workPlaces.push(place);
-            }
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     getTimeSheet() {
       //console.log("getTimeSheet");
       api
-        .getTimeSheet(this.yNumber, this.mNumber, this.id)
+        .getTimeSheet(this.yNumber, this.mNumber, this.userId)
         .then((response) => {
           this.timeSheet = response.data;
           this.timeSheet.forEach((time) => {
@@ -229,7 +232,7 @@ export default {
         this.editedRow.to == ""
       ) {
         api
-          .deleteTimeSheet(this.id, this.yNumber, this.mNumber, r.index)
+          .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
           .then((response) => {
             console.log("Data deleted: " + response.data);
           })
@@ -239,7 +242,7 @@ export default {
       } else {
         api
           .postTimeSheet(
-            this.id,
+            this.userId,
             r.from,
             r.to,
             r.place.id,

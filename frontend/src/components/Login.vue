@@ -41,7 +41,7 @@ export default {
     this.authUser({ user: null });
   },
   methods: {
-    ...mapActions(["authUser", "setEmployees"]),
+    ...mapActions(["authUser", "setEmployees", "setWorkPlaces"]),
     checkUser() {
       api
         .doesUserExist(this.userName)
@@ -57,6 +57,7 @@ export default {
         .getUserData(this.userName, this.password)
         .then((response) => {
           this.authUser({ user: response.data });
+          this.getWorkPlaces();
           if (this.isAdmin) {
             this.getEmployees();
             this.$router.push({ name: "Employees" });
@@ -80,6 +81,22 @@ export default {
             }
           });
           this.setEmployees({ employees });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getWorkPlaces() {
+      var places = new Array();
+      api
+        .getAllWorkPlaces()
+        .then((response) => {
+          response.data.forEach((place) => {
+            if (place.active) {
+              places.push(place);
+            }
+          });
+          this.setWorkPlaces({ places });
         })
         .catch((error) => {
           console.log(error);
