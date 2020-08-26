@@ -8,9 +8,16 @@ import { TablePlugin } from 'bootstrap-vue'
 import vSelect from "vue-select";
 import 'vue-select/dist/vue-select.css';
 import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
+import { FormCheckboxPlugin } from 'bootstrap-vue'
+import { Slide } from 'vue-burger-menu'
+
 
 Vue.component("v-select", vSelect);
 Vue.component("vue-timepicker", VueTimepicker)
+Vue.component("Slide", Slide);
+
+Vue.use(Slide);
+Vue.use(FormCheckboxPlugin)
 Vue.use(VueTimepicker)
 Vue.use(TablePlugin)
 Vue.use(ButtonPlugin)

@@ -6,26 +6,26 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "wage_session")
 @NoArgsConstructor
 @ToString
-@Getter @Setter
-public class User {
+@Getter
+@Setter
+public class Wage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     int id;
 
-    String userName;
-    String password;
-    String name;
-    boolean role;
+    int basic;
+    int daily;
 
     @OneToOne
-    Wage wage;
+    User user;
+
+
 
 }

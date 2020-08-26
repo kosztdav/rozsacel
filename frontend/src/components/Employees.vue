@@ -29,7 +29,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      if (store.state.user != null) {
+      if (store.state.user != null && store.state.user.role) {
         next();
       } else {
         next("/");

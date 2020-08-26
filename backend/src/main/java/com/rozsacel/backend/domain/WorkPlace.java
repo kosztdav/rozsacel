@@ -22,7 +22,6 @@ public class WorkPlace {
     int id;
 
     String name;
-    int perHour;
 
     boolean isActive;
 

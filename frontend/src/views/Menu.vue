@@ -1,29 +1,25 @@
 <template>
-  <div class="pb-3 d-flex justify-content-center">
-    <div v-if="!isAdmin">
+  <div>
+    <div v-if="isMobile">
+      <Slide noOverlay :closeOnNavigation="true">
+        <div v-for="(btn, idx) in isAdmin? adminButtons : userButtons" :key="idx">
+          <router-link :to="btn.url" tag="div">
+            <span>{{btn.text}}</span>
+          </router-link>
+        </div>
+      </Slide>
+    </div>
+    <div v-else class="pb-3 d-flex justify-content-center">
       <b-button-group variant="outline-secondary">
         <b-button
-          v-for="(btn, idx) in userButtons"
+          v-for="(btn, idx) in isAdmin? adminButtons : userButtons"
           :key="idx"
-          :to="btn.to"
+          :to="btn.url"
           :pressed="btn.state"
           @click="btnPressed(idx)"
           squared
           variant="outline-dark"
-        >{{ btn.caption }}</b-button>
-      </b-button-group>
-    </div>
-    <div v-if="isAdmin">
-      <b-button-group variant="outline-secondary">
-        <b-button
-          v-for="(btn, idx) in adminButtons"
-          :key="idx"
-          :to="btn.to"
-          :pressed="btn.state"
-          @click="adminBtnPressed(idx)"
-          squared
-          variant="outline-dark"
-        >{{ btn.caption }}</b-button>
+        >{{ btn.text }}</b-button>
       </b-button-group>
     </div>
   </div>
@@ -33,18 +29,23 @@
 <script>
 import { BButtonGroup } from "bootstrap-vue";
 import { mapGetters } from "vuex";
+import myMixin from "../mixins/myMixin";
+
 export default {
   components: { BButtonGroup },
+  mixins: [myMixin],
   data() {
     return {
       userButtons: [
-        { caption: "Jelenléti ív", state: true, to: "/jelenlet" },
-        { caption: "Beállítások", state: false, to: "/beallitasok" },
+        { text: "Jelenléti ív", state: true, url: "/jelenlet" },
+        { text: "Beállítások", state: false, url: "/beallitasok" },
       ],
       adminButtons: [
-        { caption: "Jelenléti ív", state: true, to: "/dolgozok" },
-        { caption: "Helyszínek", state: false, to: "/helyszinek" },
-        { caption: "Bérek", state: false, to: "/berek" },
+        { text: "Jelenléti ív", state: true, url: "/dolgozok" },
+        { text: "Helyszínek", state: false, url: "/helyszinek" },
+        { text: "Bérek", state: false, url: "/berek" },
+        { text: "Report", state: false, url: "/report" },
+        { text: "Beállítások", state: false, url: "/beallitasok" },
       ],
     };
   },
@@ -53,20 +54,17 @@ export default {
   },
   methods: {
     btnPressed(idx) {
-      for (let i = 0; i < this.userButtons.length; i++) {
-        if (idx == i) {
-          this.userButtons[i].state = true;
-        } else {
-          this.userButtons[i].state = false;
-        }
+      var btnArray = new Array();
+      if (this.isAdmin) {
+        btnArray = this.adminButtons;
+      } else {
+        btnArray = this.userButtons;
       }
-    },
-    adminBtnPressed(idx) {
-      for (let i = 0; i < this.adminButtons.length; i++) {
+      for (let i = 0; i < btnArray.length; i++) {
         if (idx == i) {
-          this.adminButtons[i].state = true;
+          btnArray[i].state = true;
         } else {
-          this.adminButtons[i].state = false;
+          btnArray[i].state = false;
         }
       }
     },
@@ -75,4 +73,17 @@ export default {
 </script>
 
 <style>
+.bm-burger-button {
+  margin-left: 7% !important;
+  width: 30px !important;
+  height: 25px !important;
+  left: 0px !important;
+  top: 12px !important;
+}
+.bm-burger-bars {
+  background-color: white !important;
+}
+.bm-item-list {
+  color: white !important;
+}
 </style>

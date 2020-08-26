@@ -16,7 +16,10 @@
         </div>
       </div>
       <div class="mt-3">
-        <b-table responsive outlined foot-clone :items="tableData" :fields="fields" :key="tblKey">
+        <b-table responsive outlined :items="tableData" :fields="fields" :key="tblKey">
+          <template v-slot:table-colgroup="scope">
+            <col v-for="field in scope.fields" :key="field.key" :style="{ width: '20%' }" />
+          </template>
           <template v-slot:cell(day)="row">
             <div
               v-if="typeof (month) === 'object'"
@@ -42,23 +45,24 @@
             </div>
           </template>
           <template v-slot:cell(action)="row">
-            <div v-if="editedRow!=row.item">
-              <button class="btn btn-dark sm" @click="editedRow = row.item">Szerkesztés</button>
+            <div class="text-center">
+              <div v-if="editedRow==null && isEditable(row.item.index)">
+                <button class="btn btn-dark btn-sm" @click="editedRow = row.item">Szerkesztés</button>
+              </div>
+              <div v-else-if="editedRow==row.item">
+                <button class="btn btn-dark btn-sm" @click="save">Mentés</button>
+              </div>
             </div>
-            <div v-else-if="editedRow==row.item">
-              <button class="btn btn-dark sm" @click="save">Mentés</button>
-            </div>
-          </template>
-          <template v-slot:foot(day)>
-            <i>Összesen</i>
-          </template>
-          <template v-slot:foot(from)>
-            <i>{{hours}}</i>
           </template>
           <template v-slot:foot()>
             <span></span>
           </template>
         </b-table>
+        <div class="alert alert-dark" role="alert" v-if="yNumber !=1970">
+          <i>
+            <b>Összesen: {{hours}}</b>
+          </i>
+        </div>
       </div>
     </div>
   </div>
@@ -67,7 +71,7 @@
 <script>
 import store from "../store/index";
 import VueMonthlyPicker from "vue-monthly-picker";
-import { BTableSimple } from "bootstrap-vue";
+import { BTable } from "bootstrap-vue";
 import api from "../api/api";
 import { mapGetters } from "vuex";
 
@@ -77,7 +81,7 @@ export default {
   },
   components: {
     VueMonthlyPicker,
-    BTableSimple,
+    BTable,
   },
   data() {
     var today = new Date();
@@ -135,7 +139,6 @@ export default {
 
       return numberOfDays;
     },
-
     mNumber() {
       var date = new Date(this.month);
       return date.getMonth();
@@ -180,13 +183,21 @@ export default {
     } else {
       this.userId = this.id;
     }
-
-    if (this.user != null) {
-      this.getData();
-      this.getTimeSheet();
-    }
+    this.getData();
+    this.getTimeSheet();
   },
   methods: {
+    isEditable(idx) {
+      if (this.user.role) {
+        return true;
+      }
+      var today = new Date();
+      return (
+        today.getMonth() == this.mNumber &&
+        today.getFullYear() == this.yNumber &&
+        (today.getDate() == idx || today.getDate() == idx + 1)
+      );
+    },
     getData() {
       this.tableData = new Array();
       //console.log("getData");

@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     user: null,
     employees: [],
-    workPlaces: []
+    workPlaces: [],
+    allWorkPlaces: []
   },
   mutations: {
     storeUser(state, user) {
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     },
     storeWorkPlaces(state, places) {
       state.workPlaces = places
+    },
+    storeAllWorkPlaces(state, places) {
+      state.allWorkPlaces = places
     }
   },
   actions: {
@@ -29,6 +33,9 @@ export default new Vuex.Store({
     },
     setWorkPlaces({ commit }, { places }) {
       commit("storeWorkPlaces", places);
+    },
+    setAllWorkPlaces({ commit }, { places }) {
+      commit("storeAllWorkPlaces", places);
     }
   },
   getters: {
@@ -43,6 +50,9 @@ export default new Vuex.Store({
     },
     workPlaces(state) {
       return state.workPlaces;
+    },
+    allWorkPlaces(state) {
+      return state.allWorkPlaces;
     }
   }
 });

@@ -1,14 +1,13 @@
 package com.rozsacel.backend.controller;
 
-import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
 import com.rozsacel.backend.domain.WorkPlace;
 import com.rozsacel.backend.dto.AttendanceDto;
+import com.rozsacel.backend.dto.WagePerLocationDto;
 import com.rozsacel.backend.service.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -77,5 +76,18 @@ public class HomeController {
     public String changePassword (@RequestParam int userId, @RequestParam String oldPass, @RequestParam String newPass){
         service.changePassword(userId,oldPass,newPass);
         return "OK";
+    }
+
+    @RequestMapping(path = "/updateWorkPlace", method = POST, produces = "application/json")
+    @ResponseBody
+    public String updateWorkPlace(@RequestBody WorkPlace workPlace){
+        service.updateWorkPlace(workPlace);
+        return "OK";
+    }
+
+    @RequestMapping(path = "/getWage/{year}/{month}/{id}", method = GET, produces = "application/json")
+    @ResponseBody
+    public List<WagePerLocationDto> getWageOfEmployee(@PathVariable int year, @PathVariable int month, @PathVariable int id){
+        return service.getWageOfEmployee(year, month, id);
     }
 }

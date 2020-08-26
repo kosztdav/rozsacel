@@ -5,6 +5,7 @@ import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
 import com.rozsacel.backend.domain.WorkPlace;
 import com.rozsacel.backend.dto.AttendanceDto;
+import com.rozsacel.backend.dto.WagePerLocationDto;
 import com.rozsacel.backend.repository.AttendanceRepo;
 import com.rozsacel.backend.repository.UserRepo;
 import com.rozsacel.backend.repository.WorkPlaceRepo;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -36,6 +38,7 @@ public class BackendService {
             user.setPassword("");
         }
 
+        users.sort(Comparator.comparing(User::getName));
         return users;
     }
 
@@ -110,5 +113,24 @@ public class BackendService {
         }else{
             throw new IllegalArgumentException();
         }
+    }
+
+    public void updateWorkPlace(WorkPlace workPlace){
+        workPlaceRepo.save(workPlace);
+    }
+
+    //TODO
+    public List<WagePerLocationDto> getWageOfEmployee(int year, int month, int id) {
+        List<WagePerLocationDto> dtos = new ArrayList<>();
+        User user = userRepo.findById(id). get();
+        List<Attendance> attendances = attendanceRepo.findAllByUser(user);
+        for (Attendance attendance : attendances) {
+            if (attendance.getDate().getMonthValue() == month+1 && attendance.getDate().getYear() == year) {
+                WagePerLocationDto dto = new WagePerLocationDto();
+
+            }
+        }
+
+        return dtos;
     }
 }

@@ -21,12 +21,14 @@ import api from "../api/api";
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 import store from "../store/index";
+import myMixin from "../mixins/myMixin";
 
 export default {
   components: {
     BFormGroup,
     BFormInput,
   },
+  mixins: [myMixin],
   data() {
     return {
       userName: "",
@@ -41,7 +43,7 @@ export default {
     this.authUser({ user: null });
   },
   methods: {
-    ...mapActions(["authUser", "setEmployees", "setWorkPlaces"]),
+    ...mapActions(["authUser", "setEmployees"]),
     checkUser() {
       api
         .doesUserExist(this.userName)
@@ -81,22 +83,6 @@ export default {
             }
           });
           this.setEmployees({ employees });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    getWorkPlaces() {
-      var places = new Array();
-      api
-        .getAllWorkPlaces()
-        .then((response) => {
-          response.data.forEach((place) => {
-            if (place.active) {
-              places.push(place);
-            }
-          });
-          this.setWorkPlaces({ places });
         })
         .catch((error) => {
           console.log(error);

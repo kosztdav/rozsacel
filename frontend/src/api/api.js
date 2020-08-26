@@ -3,6 +3,7 @@ import axios from "axios";
 
 const SERVER_URL = "http://192.168.0.171:9000/api";
 //const SERVER_URL = "http://192.168.1.69:9000/api";
+//const SERVER_URL = "http://localhost:9000/api";
 
 const instance = axios.create({
     baseURL: SERVER_URL,
@@ -69,6 +70,10 @@ class Api {
         bodyFormData.set('oldPass', oldPass);
         bodyFormData.set('newPass', newPass);
         return instance.post("changePassword", bodyFormData);
+    }
+
+    saveWorkPlace(workPlace) {
+        return instance.post("updateWorkPlace", workPlace);
     }
 }
 

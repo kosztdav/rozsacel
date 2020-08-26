@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import Login from "../components/Login.vue";
 import Attendance from "../components/AttendanceSheet.vue";
 import Settings from "../components/Settings.vue";
-import Employees from "../components/Employees.vue"
+import Employees from "../components/Employees.vue";
+import WorkPlaces from "../components/WorkPlaces.vue";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,14 @@ const routes = [
     path: "/dolgozok",
     name: "Employees",
     component: Employees
+  },
+  {
+    path: "/helyszinek",
+    name: "WorkPlaces",
+    component: WorkPlaces
+  },
+  {
+    path: '*', redirect: '/',
 
   }
 ];

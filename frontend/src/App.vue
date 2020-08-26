@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <Header />
-    <Menu v-if="user!=null" />
+    <Menu v-if="user!=null && !isMobile" />
     <router-view />
   </div>
 </template>
@@ -10,14 +10,26 @@
 import Header from "./views/Header.vue";
 import Menu from "./views/Menu.vue";
 import { mapGetters } from "vuex";
+import myMixin from "./mixins/myMixin";
 
 export default {
   components: {
     Header,
     Menu,
   },
+  mixins: [myMixin],
   computed: {
     ...mapGetters(["user"]),
   },
 };
 </script>
+<style>
+.page-item.active .page-link {
+  background-color: #292b2c !important;
+  border-color: #292b2c !important;
+}
+.page-item {
+  color: black;
+}
+</style>
+
