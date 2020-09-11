@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="header row">
-        <div v-if="user==null" class="text-right">Nincs bejelentkezve</div>
+        <div v-if="user==null" class="text-right pr-2">Nincs bejelentkezve</div>
         <div v-else>
           <div v-if="isMobile">
             <div class="ml-3">

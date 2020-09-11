@@ -41,9 +41,9 @@ export default {
         { text: "Beállítások", state: false, url: "/beallitasok" },
       ],
       adminButtons: [
-        { text: "Jelenléti ív", state: true, url: "/dolgozok" },
+        { text: "Jelenléti ív", state: true, url: "/jelenletek" },
         { text: "Helyszínek", state: false, url: "/helyszinek" },
-        { text: "Bérek", state: false, url: "/berek" },
+        { text: "Dolgozók", state: false, url: "/dolgozok" },
         { text: "Report", state: false, url: "/report" },
         { text: "Beállítások", state: false, url: "/beallitasok" },
       ],

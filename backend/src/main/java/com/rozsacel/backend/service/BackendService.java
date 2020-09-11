@@ -36,6 +36,7 @@ public class BackendService {
         users = userRepo.findAll();
         for (User user : users) {
             user.setPassword("");
+            user.setWage(null);
         }
 
         users.sort(Comparator.comparing(User::getName));
@@ -49,7 +50,7 @@ public class BackendService {
 
     public User getUserData(String userName, String password) {
         User user = userRepo.findByUserNameAndPassword(userName, password);
-        if(user == null){
+        if (user == null) {
             throw new IllegalArgumentException();
         }
         return user;
@@ -60,9 +61,9 @@ public class BackendService {
         List<Attendance> attendances = attendanceRepo.findAllByUser(user);
         List<AttendanceDto> dtos = new ArrayList<>();
         for (Attendance attendance : attendances) {
-            if (attendance.getDate().getMonthValue() == month+1 && attendance.getDate().getYear() == year) {
+            if (attendance.getDate().getMonthValue() == month + 1 && attendance.getDate().getYear() == year) {
                 AttendanceDto dto = new AttendanceDto();
-                dto.index = attendance.getDate().getDayOfMonth() -1;
+                dto.index = attendance.getDate().getDayOfMonth() - 1;
                 dto.from = attendance.getStartTime().toString().substring(0, 5);
                 dto.to = attendance.getEndTime().toString().substring(0, 5);
                 dto.place = attendance.getWorkPlace().getName();
@@ -81,7 +82,7 @@ public class BackendService {
         return workPlaces;
     }
 
-    public void postAttendance(int userId, String from, String to, int placeId, int year, int month, int day){
+    public void postAttendance(int userId, String from, String to, int placeId, int year, int month, int day) {
 
         User user = userRepo.findById(userId).get();
         WorkPlace workPlace = workPlaceRepo.findById(placeId).get();
@@ -90,42 +91,49 @@ public class BackendService {
         attendance.setWorkPlace(workPlace);
         attendance.setStartTime(LocalTime.parse(from));
         attendance.setEndTime(LocalTime.parse(to));
-        LocalDate date = LocalDate.of(year,month,day);
+        LocalDate date = LocalDate.of(year, month, day);
         attendance.setDate(date);
 
         attendanceRepo.save(attendance);
 
     }
 
-    public void deleteAttendance(int userId, int year, int month, int day){
+    public void deleteAttendance(int userId, int year, int month, int day) {
         User user = userRepo.findById(userId).get();
-        LocalDate date = LocalDate.of(year,month,day);
+        LocalDate date = LocalDate.of(year, month, day);
 
-        Attendance attendance = attendanceRepo.findByUserAndDate(user,date);
+        Attendance attendance = attendanceRepo.findByUserAndDate(user, date);
         attendanceRepo.delete(attendance);
     }
 
-    public void changePassword(int userId, String oldPass, String newPass){
+    public void changePassword(int userId, String oldPass, String newPass) {
         User user = userRepo.findById(userId).get();
-        if(user.getPassword().equals(oldPass)){
+        if (user.getPassword().equals(oldPass)) {
             user.setPassword(newPass);
             userRepo.save(user);
-        }else{
+        } else {
             throw new IllegalArgumentException();
         }
     }
 
-    public void updateWorkPlace(WorkPlace workPlace){
+    public void updateWorkPlace(WorkPlace workPlace) {
+        workPlaceRepo.save(workPlace);
+    }
+
+    public void newWorkPlace(String name, boolean isActive){
+        WorkPlace workPlace = new WorkPlace();
+        workPlace.setName(name);
+        workPlace.setActive(isActive);
         workPlaceRepo.save(workPlace);
     }
 
     //TODO
     public List<WagePerLocationDto> getWageOfEmployee(int year, int month, int id) {
         List<WagePerLocationDto> dtos = new ArrayList<>();
-        User user = userRepo.findById(id). get();
+        User user = userRepo.findById(id).get();
         List<Attendance> attendances = attendanceRepo.findAllByUser(user);
         for (Attendance attendance : attendances) {
-            if (attendance.getDate().getMonthValue() == month+1 && attendance.getDate().getYear() == year) {
+            if (attendance.getDate().getMonthValue() == month + 1 && attendance.getDate().getYear() == year) {
                 WagePerLocationDto dto = new WagePerLocationDto();
 
             }

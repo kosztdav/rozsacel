@@ -62,7 +62,7 @@ export default {
           this.getWorkPlaces();
           if (this.isAdmin) {
             this.getEmployees();
-            this.$router.push({ name: "Employees" });
+            this.$router.push({ name: "AttendanceAdmin" });
           } else {
             this.$router.push({ name: "Attendance" });
           }

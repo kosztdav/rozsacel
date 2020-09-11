@@ -23,6 +23,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .page-item.active .page-link {
   background-color: #292b2c !important;
@@ -31,5 +32,7 @@ export default {
 .page-item {
   color: black;
 }
+.modal-backdrop {
+  opacity: 0.5 !important;
+}
 </style>
-

@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="mt-3">
-        <b-table responsive outlined :items="tableData" :fields="fields" :key="tblKey">
+        <b-table class="tbl" responsive outlined :items="tableData" :fields="fields" :key="tblKey">
           <template v-slot:table-colgroup="scope">
             <col v-for="field in scope.fields" :key="field.key" :style="{ width: '20%' }" />
           </template>
@@ -210,6 +210,7 @@ export default {
         };
       }
       this.tblKey++;
+      this.editedRow = null;
     },
     getTimeSheet() {
       //console.log("getTimeSheet");
@@ -283,4 +284,8 @@ export default {
   },
 };
 </script>
-
+<style>
+.tbl {
+  overflow: inherit;
+}
+</style>

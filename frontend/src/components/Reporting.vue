@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="mt-3 text-center">Dolgozók</h1>
+    <h1 class="mt-3 text-center">Report</h1>
   </div>
 </template>
 

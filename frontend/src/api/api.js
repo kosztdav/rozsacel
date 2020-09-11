@@ -75,6 +75,13 @@ class Api {
     saveWorkPlace(workPlace) {
         return instance.post("updateWorkPlace", workPlace);
     }
+
+    newWorkPlace(workPlace) {
+        var bodyFormData = new FormData();
+        bodyFormData.set('name', workPlace.name);
+        bodyFormData.set('isActive', workPlace.isActive);
+        return instance.post("newWorkPlace", bodyFormData);
+    }
 }
 
 export default new Api();

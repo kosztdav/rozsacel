@@ -3,8 +3,10 @@ import VueRouter from "vue-router";
 import Login from "../components/Login.vue";
 import Attendance from "../components/AttendanceSheet.vue";
 import Settings from "../components/Settings.vue";
-import Employees from "../components/Employees.vue";
+import AttendanceAdmin from "../components/AttendanceSheetAdmin.vue";
 import WorkPlaces from "../components/WorkPlaces.vue";
+import Employees from '../components/Employees.vue'
+import Reporting from '../components/Reporting.vue'
 
 Vue.use(VueRouter);
 
@@ -25,14 +27,24 @@ const routes = [
     component: Settings
   },
   {
-    path: "/dolgozok",
-    name: "Employees",
-    component: Employees
+    path: "/jelenletek",
+    name: "AttendanceAdmin",
+    component: AttendanceAdmin
   },
   {
     path: "/helyszinek",
     name: "WorkPlaces",
     component: WorkPlaces
+  },
+  {
+    path: "/report",
+    name: "Reporting",
+    component: Reporting
+  },
+  {
+    path: "/dolgozok",
+    name: "Employees",
+    component: Employees
   },
   {
     path: '*', redirect: '/',
