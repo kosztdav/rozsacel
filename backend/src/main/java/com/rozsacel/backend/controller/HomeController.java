@@ -1,5 +1,6 @@
 package com.rozsacel.backend.controller;
 
+import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
 import com.rozsacel.backend.domain.WorkPlace;
 import com.rozsacel.backend.dto.AttendanceDto;
@@ -8,6 +9,7 @@ import com.rozsacel.backend.service.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -45,10 +47,10 @@ public class HomeController {
         return service.getUserData(userName, password);
     }
 
-    @RequestMapping(path = "/getTimeSheet", method = GET, produces = "application/json")
+    @RequestMapping(path = "/getTimeSheet/{userId}/{year}/{month}", method = GET, produces = "application/json")
     @ResponseBody
-    public List<AttendanceDto> getTimeSheet(@RequestParam int year, @RequestParam int month, @RequestParam int userId) {
-        return service.getTimeSheet(year, month, userId);
+    public List<AttendanceDto> getTimeSheet(@PathVariable int userId,@PathVariable  int year, @PathVariable int month) {
+        return service.getTimeSheet(userId, year, month);
     }
 
     @RequestMapping(path = "/getAllWorkPlaces", method = GET, produces = "application/json")
@@ -92,9 +94,11 @@ public class HomeController {
         return "OK";
     }
 
-    @RequestMapping(path = "/getWage/{year}/{month}/{id}", method = GET, produces = "application/json")
+    @RequestMapping(path = "/getReport/{id}/{year}/{month}", method = GET, produces = "application/json")
     @ResponseBody
-    public List<WagePerLocationDto> getWageOfEmployee(@PathVariable int year, @PathVariable int month, @PathVariable int id) {
-        return service.getWageOfEmployee(year, month, id);
+    public  List<WagePerLocationDto> getReport(@PathVariable int id, @PathVariable int year, @PathVariable int month) {
+        return service.getWageOfEmployee(id, year, month);
     }
+
+
 }

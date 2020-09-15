@@ -215,7 +215,7 @@ export default {
     getTimeSheet() {
       //console.log("getTimeSheet");
       api
-        .getTimeSheet(this.yNumber, this.mNumber, this.userId)
+        .getTimeSheet(this.userId, this.yNumber, this.mNumber + 1)
         .then((response) => {
           this.timeSheet = response.data;
           this.timeSheet.forEach((time) => {
@@ -247,6 +247,7 @@ export default {
           .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
           .then((response) => {
             console.log("Data deleted: " + response.data);
+            this.refreshData();
           })
           .catch((error) => {
             console.log(error);
@@ -264,13 +265,13 @@ export default {
           )
           .then((response) => {
             console.log("Data saved: " + response.data);
+            this.refreshData();
           })
           .catch((error) => {
             console.log(error);
           });
       }
       this.editedRow = null;
-      this.refreshData();
     },
   },
   beforeRouteEnter(to, from, next) {

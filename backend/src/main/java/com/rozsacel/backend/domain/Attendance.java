@@ -16,6 +16,12 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @IdClass(AttendanceID.class)
+//@NamedStoredProcedureQuery(name = "Attendance.getWagePerLocationList",
+//        procedureName = "getWagePerLocationList", parameters = {
+//        @StoredProcedureParameter(mode = ParameterMode.IN, name = "user_id", type = Integer.class),
+//        @StoredProcedureParameter(mode = ParameterMode.IN, name = "year", type = Integer.class),
+//        @StoredProcedureParameter(mode = ParameterMode.IN, name = "month", type = Integer.class)
+//       })
 public class Attendance {
 
     @Id

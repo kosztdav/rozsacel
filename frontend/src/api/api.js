@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
 
-const SERVER_URL = "http://192.168.0.171:9000/api";
+//const SERVER_URL = "http://192.168.0.171:9000/api";
 //const SERVER_URL = "http://192.168.1.69:9000/api";
 //const SERVER_URL = "http://localhost:9000/api";
+const SERVER_URL = "/api";
 
 const instance = axios.create({
     baseURL: SERVER_URL,
@@ -33,14 +34,8 @@ class Api {
         return instance.get("getAllWorkPlaces");
     }
 
-    getTimeSheet(year, month, userId) {
-        return instance.get("getTimeSheet", {
-            params: {
-                year,
-                month,
-                userId
-            }
-        })
+    getTimeSheet(userId, year, month) {
+        return instance.get("getTimeSheet/" + userId + "/" + year + "/" + month);
     }
 
     postTimeSheet(userId, from, to, placeId, year, month, day) {
@@ -81,6 +76,10 @@ class Api {
         bodyFormData.set('name', workPlace.name);
         bodyFormData.set('isActive', workPlace.isActive);
         return instance.post("newWorkPlace", bodyFormData);
+    }
+
+    getReport(id, year, month) {
+        return instance.get("getReport/" + id + "/" + year + "/" + month);
     }
 }
 

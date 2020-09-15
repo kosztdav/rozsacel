@@ -12,11 +12,10 @@ import com.rozsacel.backend.repository.WorkPlaceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BackendService {
@@ -36,7 +35,6 @@ public class BackendService {
         users = userRepo.findAll();
         for (User user : users) {
             user.setPassword("");
-            user.setWage(null);
         }
 
         users.sort(Comparator.comparing(User::getName));
@@ -56,12 +54,10 @@ public class BackendService {
         return user;
     }
 
-    public List<AttendanceDto> getTimeSheet(int year, int month, int userId) {
-        User user = userRepo.findById(userId).get();
-        List<Attendance> attendances = attendanceRepo.findAllByUser(user);
+    public List<AttendanceDto> getTimeSheet(int userId, int year, int month) {
+        List<Attendance> attendances = attendanceRepo.getMonthlyTimeSheet(userId,year,month);
         List<AttendanceDto> dtos = new ArrayList<>();
         for (Attendance attendance : attendances) {
-            if (attendance.getDate().getMonthValue() == month + 1 && attendance.getDate().getYear() == year) {
                 AttendanceDto dto = new AttendanceDto();
                 dto.index = attendance.getDate().getDayOfMonth() - 1;
                 dto.from = attendance.getStartTime().toString().substring(0, 5);
@@ -69,7 +65,6 @@ public class BackendService {
                 dto.place = attendance.getWorkPlace().getName();
                 dto.placeId = attendance.getWorkPlace().getId();
                 dtos.add(dto);
-            }
         }
         return dtos;
     }
@@ -79,6 +74,7 @@ public class BackendService {
         for (WorkPlace workPlace : workPlaces) {
             workPlace.setAttendance(null);
         }
+        workPlaces.sort(Comparator.comparing(WorkPlace::getName));
         return workPlaces;
     }
 
@@ -127,18 +123,25 @@ public class BackendService {
         workPlaceRepo.save(workPlace);
     }
 
-    //TODO
-    public List<WagePerLocationDto> getWageOfEmployee(int year, int month, int id) {
-        List<WagePerLocationDto> dtos = new ArrayList<>();
-        User user = userRepo.findById(id).get();
-        List<Attendance> attendances = attendanceRepo.findAllByUser(user);
-        for (Attendance attendance : attendances) {
-            if (attendance.getDate().getMonthValue() == month + 1 && attendance.getDate().getYear() == year) {
-                WagePerLocationDto dto = new WagePerLocationDto();
 
+    public List<WagePerLocationDto> getWageOfEmployee(int id, int year, int month) {
+        List<Object> objectList =  attendanceRepo.getWagePerLocationList(id,year,month);
+        List<WagePerLocationDto> dtos = new ArrayList<>();
+        for (Object o : objectList) {
+            if(o.getClass().isArray()) {
+                Object[] objectArray = (Object[]) o;
+                WagePerLocationDto dto = new WagePerLocationDto();
+                dto.workPlace = objectArray[0].toString();
+                dto.days = Integer.parseInt(objectArray[1].toString());
+                dto.hours = Integer.parseInt(objectArray[2].toString());
+                dto.minutes = Integer.parseInt(objectArray[3].toString());
+                dto.halfDays = Integer.parseInt(objectArray[4].toString());
+                dto.weekendDays = Integer.parseInt(objectArray[5].toString());
+                dto.overtime = Integer.parseInt(objectArray[6].toString());
+                dtos.add(dto);
             }
         }
-
         return dtos;
     }
+
 }

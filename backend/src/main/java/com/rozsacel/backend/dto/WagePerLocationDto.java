@@ -5,9 +5,10 @@ public class WagePerLocationDto {
 
     public String workPlace;
     public int days;
+    public int hours;
+    public int minutes;
     public int halfDays;
     public int weekendDays;
     public int overtime;
-    public int wage;
 
 }

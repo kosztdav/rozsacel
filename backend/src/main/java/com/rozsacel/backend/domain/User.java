@@ -25,7 +25,5 @@ public class User {
     String name;
     boolean role;
 
-    @OneToOne
-    Wage wage;
 
 }
