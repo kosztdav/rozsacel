@@ -9,6 +9,8 @@ import com.rozsacel.backend.service.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,6 +101,5 @@ public class HomeController {
     public  List<WagePerLocationDto> getReport(@PathVariable int id, @PathVariable int year, @PathVariable int month) {
         return service.getWageOfEmployee(id, year, month);
     }
-
 
 }
