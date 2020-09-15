@@ -3,33 +3,33 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com</groupId>
-    <artifactId>rozsacel</artifactId>
+	<groupId>com.rozsacel</groupId>
+	<artifactId>rozsacel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>spring-boot-vuejs</name>
+	<name>rozsacel</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.6.RELEASE</version>
+		<version>2.3.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-    <properties>
-        <main.basedir>${project.basedir}</main.basedir>
+	<properties>
+		<main.basedir>${project.basedir}</main.basedir>
 
 		<!-- Analysis Tools for CI -->
 		<build-plugin.jacoco.version>0.8.5</build-plugin.jacoco.version>
 		<build-plugin.coveralls.version>4.3.0</build-plugin.coveralls.version>
-    </properties>
-	
+	</properties>
+
 	<modules>
-        <module>frontend</module>
-        <module>backend</module>
-    </modules>
+		<module>frontend</module>
+		<module>backend</module>
+	</modules>
 
 	<build>
 		<plugins>
