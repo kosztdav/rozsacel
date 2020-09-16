@@ -15,6 +15,14 @@
         <template v-slot:cell(workPlace)="row">
           <div class="text-left">{{row.item.workPlace}}</div>
         </template>
+        <template v-slot:head(days)="row">
+          <div>
+            <div>{{row.label}}</div>
+            <div>
+              <small class="text-muted">(Összesen)</small>
+            </div>
+          </div>
+        </template>
         <template v-slot:cell(hours)="row">
           <div v-if="row.item.minutes == 0">{{row.item.hours + ":00"}}</div>
           <div v-else>{{row.item.hours + ":"+row.item.minutes}}</div>
@@ -23,6 +31,13 @@
           <div>{{row.item.hours *1300 + row.item.weekendDays * 5000 + row.item.overtime*500}}</div>
         </template>
       </b-table>
+    </div>
+    <div class="mt-3" v-else-if="selectedEmployee && reportData.length ==0">
+      <div class="alert alert-dark text-center" role="alert">
+        <i>
+          <b>Nincs adat a választott hónapról</b>
+        </i>
+      </div>
     </div>
   </div>
 </template>

@@ -247,6 +247,7 @@ export default {
           .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
           .then((response) => {
             console.log("Data deleted: " + response.data);
+            alert("Sor törölve");
             this.refreshData();
           })
           .catch((error) => {
@@ -265,6 +266,7 @@ export default {
           )
           .then((response) => {
             console.log("Data saved: " + response.data);
+            alert("Sor mentve");
             this.refreshData();
           })
           .catch((error) => {

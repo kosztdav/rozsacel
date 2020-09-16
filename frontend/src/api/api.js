@@ -1,14 +1,12 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
 
-//const SERVER_URL = "http://192.168.0.171:9000/api";
-//const SERVER_URL = "http://192.168.1.69:9000/api";
-//const SERVER_URL = "http://localhost:9000/api";
-const SERVER_URL = "/api";
+const SERVER_URL = "http://localhost:9000/api";
+//const SERVER_URL = "/api";
 
 const instance = axios.create({
     baseURL: SERVER_URL,
-    timeout: 1000
+
 });
 
 class Api {

@@ -1,6 +1,5 @@
 package com.rozsacel.backend.controller;
 
-import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
 import com.rozsacel.backend.domain.WorkPlace;
 import com.rozsacel.backend.dto.AttendanceDto;
@@ -9,9 +8,6 @@ import com.rozsacel.backend.service.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
