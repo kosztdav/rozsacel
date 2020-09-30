@@ -8,7 +8,7 @@ const instance = axios.create({
     baseURL: SERVER_URL,
 });
 
-class Api {
+export default {
 
     getAllUsers() {
         return instance.get("users");
@@ -79,5 +79,3 @@ class Api {
         return instance.get("getReport/" + id + "/" + year + "/" + month);
     }
 }
-
-export default new Api();
