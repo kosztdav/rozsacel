@@ -48,7 +48,7 @@ public class BackendService {
     public User getUserData(String userName, String password) {
         User user = userRepo.findByUserNameAndPassword(userName, password);
         if (user == null) {
-            throw  new IllegalArgumentException();
+            return null;
         }
         return user;
     }
@@ -103,14 +103,15 @@ public class BackendService {
         }
     }
 
-    public void changePassword(int userId, String oldPass, String newPass) {
+    public String changePassword(int userId, String oldPass, String newPass) {
         User user = userRepo.findById(userId).get();
         if (user.getPassword().equals(oldPass)) {
             user.setPassword(newPass);
             userRepo.save(user);
         } else {
-            throw new IllegalArgumentException();
+            return null;
         }
+        return "OK";
     }
 
     public void updateWorkPlace(WorkPlace workPlace) {

@@ -71,7 +71,6 @@ export default {
         .getUserData(this.userName, this.password)
         .then((response) => {
           if (response.data) {
-            console.log("Ez a response: " + response.data);
             this.authUser({ user: response.data });
             this.getWorkPlaces();
             if (this.isAdmin) {

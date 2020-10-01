@@ -74,8 +74,7 @@ public class HomeController {
     @RequestMapping(path = "/changePassword", method = POST, produces = "application/json")
     @ResponseBody
     public String changePassword(@RequestParam int userId, @RequestParam String oldPass, @RequestParam String newPass) {
-        service.changePassword(userId, oldPass, newPass);
-        return "OK";
+        return service.changePassword(userId, oldPass, newPass);
     }
 
     @RequestMapping(path = "/updateWorkPlace", method = POST, produces = "application/json")
