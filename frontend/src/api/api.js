@@ -12,11 +12,11 @@ export default {
 
     getAllUsers() {
         return instance.get("users");
-    }
+    },
 
     doesUserExist(userName) {
         return instance.get("checkUser/" + userName);
-    }
+    },
 
     getUserData(userName, password) {
         return instance.get("login", {
@@ -25,15 +25,15 @@ export default {
                 password
             }
         })
-    }
+    },
 
     getAllWorkPlaces() {
         return instance.get("getAllWorkPlaces");
-    }
+    },
 
     getTimeSheet(userId, year, month) {
         return instance.get("getTimeSheet/" + userId + "/" + year + "/" + month);
-    }
+    },
 
     postTimeSheet(userId, from, to, placeId, year, month, day) {
         var bodyFormData = new FormData();
@@ -45,7 +45,7 @@ export default {
         bodyFormData.set('month', month + 1);
         bodyFormData.set('day', day);
         return instance.post("postAttendance", bodyFormData);
-    }
+    },
 
     deleteTimeSheet(userId, year, month, day) {
         var bodyFormData = new FormData();
@@ -54,7 +54,7 @@ export default {
         bodyFormData.set('month', month + 1);
         bodyFormData.set('day', day);
         return instance.post("deleteAttendance", bodyFormData);
-    }
+    },
 
     changePassword(userId, oldPass, newPass) {
         var bodyFormData = new FormData();
@@ -62,20 +62,20 @@ export default {
         bodyFormData.set('oldPass', oldPass);
         bodyFormData.set('newPass', newPass);
         return instance.post("changePassword", bodyFormData);
-    }
+    },
 
     saveWorkPlace(workPlace) {
         return instance.post("updateWorkPlace", workPlace);
-    }
+    },
 
     newWorkPlace(workPlace) {
         var bodyFormData = new FormData();
         bodyFormData.set('name', workPlace.name);
         bodyFormData.set('isActive', workPlace.isActive);
         return instance.post("newWorkPlace", bodyFormData);
-    }
+    },
 
     getReport(id, year, month) {
         return instance.get("getReport/" + id + "/" + year + "/" + month);
-    }
+    },
 }

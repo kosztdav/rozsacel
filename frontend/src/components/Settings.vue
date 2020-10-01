@@ -39,9 +39,13 @@ export default {
       api
         .changePassword(this.user.id, this.oldPass, this.newPass)
         .then((response) => {
-          alert("Jelszó módosítva");
-          this.oldPass = "";
-          this.newPass = "";
+          if (response.data) {
+            alert("Jelszó módosítva");
+            this.oldPass = "";
+            this.newPass = "";
+          } else {
+            alert("Hibás adatok");
+          }
         })
         .catch((error) => {
           alert("Hibás adatok");

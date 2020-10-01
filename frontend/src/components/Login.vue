@@ -3,13 +3,25 @@
   <div>
     <b-form @submit.stop.prevent>
       <b-form-group id="name" label="Név" label-for="name">
-        <b-form-input :state="validation" v-model="userName" @input="checkUser"></b-form-input>
-        <b-form-invalid-feedback>Nincs ilyen felhasználó</b-form-invalid-feedback>
+        <b-form-input
+          :state="validation"
+          v-model="userName"
+          @input="checkUser"
+        ></b-form-input>
+        <b-form-invalid-feedback
+          >Nincs ilyen felhasználó</b-form-invalid-feedback
+        >
       </b-form-group>
       <b-form-group id="pass" label="Jelszó" label-for="pass">
         <b-form-input type="password" v-model="password"></b-form-input>
       </b-form-group>
-      <button class="btn btn-dark" @click="login" :disabled="!validation || password==''">Belépés</button>
+      <button
+        class="btn btn-dark"
+        @click="login"
+        :disabled="!validation || password == ''"
+      >
+        Belépés
+      </button>
     </b-form>
   </div>
 </template>
@@ -63,13 +75,17 @@ export default {
       api
         .getUserData(this.userName, this.password)
         .then((response) => {
-          this.authUser({ user: response.data });
-          this.getWorkPlaces();
-          if (this.isAdmin) {
-            this.getEmployees();
-            this.$router.push({ name: "AttendanceAdmin" });
+          if (response.data) {
+            this.authUser({ user: response.data });
+            this.getWorkPlaces();
+            if (this.isAdmin) {
+              this.getEmployees();
+              this.$router.push({ name: "AttendanceAdmin" });
+            } else {
+              this.$router.push({ name: "Attendance" });
+            }
           } else {
-            this.$router.push({ name: "Attendance" });
+            alert("Hibás adatok");
           }
         })
         .catch((error) => {
