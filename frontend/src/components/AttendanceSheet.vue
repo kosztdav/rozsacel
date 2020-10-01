@@ -10,47 +10,90 @@
           </div>
           <div class="row">
             <div class="col">
-              <vue-monthly-picker @input="refreshData" :monthLabels="monthLabels" v-model="month"></vue-monthly-picker>
+              <vue-monthly-picker
+                @input="refreshData(), (isBusy = true), (busyText = 'Betöltés')"
+                :monthLabels="monthLabels"
+                v-model="month"
+              ></vue-monthly-picker>
             </div>
           </div>
         </div>
       </div>
       <div class="mt-3">
-        <b-table class="tbl" responsive outlined :items="tableData" :fields="fields" :key="tblKey">
+        <b-table
+          class="tbl"
+          responsive
+          outlined
+          :items="tableData"
+          :fields="fields"
+          :key="tblKey"
+          :busy="isBusy"
+        >
+          <template v-slot:table-busy>
+            <div class="text-center text-danger my-2">
+              <b-spinner class="align-middle" variant="dark"></b-spinner>
+              <strong style="color: black"> {{ busyText }}...</strong>
+            </div>
+          </template>
           <template v-slot:table-colgroup="scope">
-            <col v-for="field in scope.fields" :key="field.key" :style="{ width: '20%' }" />
+            <col
+              v-for="field in scope.fields"
+              :key="field.key"
+              :style="{ width: '20%' }"
+            />
           </template>
           <template v-slot:cell(day)="row">
-            <div
-              v-if="typeof (month) === 'object'"
-            >{{monthLabels[month._d.getMonth()] +" "+ row.item.index + "."}}</div>
-            <div v-else>{{monthLabels[mNumber] +" "+ row.item.index + "."}}</div>
+            <div v-if="typeof month === 'object'">
+              {{
+                monthLabels[month._d.getMonth()] + " " + row.item.index + "."
+              }}
+            </div>
+            <div v-else>
+              {{ monthLabels[mNumber] + " " + row.item.index + "." }}
+            </div>
           </template>
           <template v-slot:cell(from)="row">
-            <div v-if="editedRow != row.item">{{row.item.from}}</div>
+            <div v-if="editedRow != row.item">{{ row.item.from }}</div>
             <div v-else>
-              <vue-timepicker :minute-interval="10" v-model="editedRow.from"></vue-timepicker>
+              <vue-timepicker
+                :minute-interval="10"
+                v-model="editedRow.from"
+              ></vue-timepicker>
             </div>
           </template>
           <template v-slot:cell(to)="row">
-            <div v-if="editedRow != row.item">{{row.item.to}}</div>
+            <div v-if="editedRow != row.item">{{ row.item.to }}</div>
             <div v-else>
-              <vue-timepicker :minute-interval="10" v-model="editedRow.to"></vue-timepicker>
+              <vue-timepicker
+                :minute-interval="10"
+                v-model="editedRow.to"
+              ></vue-timepicker>
             </div>
           </template>
           <template v-slot:cell(place)="row">
-            <div v-if="editedRow != row.item">{{row.item.place.name}}</div>
+            <div v-if="editedRow != row.item">{{ row.item.place.name }}</div>
             <div v-else>
-              <v-select :options="workPlaces" v-model="editedRow.place" label="name" />
+              <v-select
+                :options="workPlaces"
+                v-model="editedRow.place"
+                label="name"
+              />
             </div>
           </template>
           <template v-slot:cell(action)="row">
             <div class="text-center">
-              <div v-if="editedRow==null && isEditable(row.item.index)">
-                <button class="btn btn-dark btn-sm" @click="editedRow = row.item">Szerkesztés</button>
+              <div v-if="editedRow == null && isEditable(row.item.index)">
+                <button
+                  class="btn btn-dark btn-sm"
+                  @click="editedRow = row.item"
+                >
+                  Szerkesztés
+                </button>
               </div>
-              <div v-else-if="editedRow==row.item">
-                <button class="btn btn-dark btn-sm" @click="save">Mentés</button>
+              <div v-else-if="editedRow == row.item">
+                <button class="btn btn-dark btn-sm" @click="save">
+                  Mentés
+                </button>
               </div>
             </div>
           </template>
@@ -58,9 +101,9 @@
             <span></span>
           </template>
         </b-table>
-        <div class="alert alert-dark" role="alert" v-if="yNumber !=1970">
+        <div class="alert alert-dark" role="alert" v-if="yNumber != 1970">
           <i>
-            <b>Összesen: {{hours}}</b>
+            <b>Összesen: {{ hours }}</b>
           </i>
         </div>
       </div>
@@ -96,7 +139,9 @@ export default {
       tblKey: 0,
       editedRow: null,
       userId: null,
+      isBusy: true,
       timeSheet: [],
+      busyText: "",
       monthLabels: [
         "Jan",
         "Feb",
@@ -183,6 +228,7 @@ export default {
     } else {
       this.userId = this.id;
     }
+    this.busyText = "Betöltés";
     this.getData();
     this.getTimeSheet();
   },
@@ -227,6 +273,7 @@ export default {
             this.tableData[time.index].index = time.index + 1;
           });
           this.tblKey++;
+          this.isBusy = false;
         })
         .catch((error) => {
           console.log(error);
@@ -238,6 +285,8 @@ export default {
     },
     save() {
       var r = this.editedRow;
+      this.busyText = "Mentés";
+      this.isBusy = true;
       if (
         this.editedRow.place == null ||
         this.editedRow.from == "" ||
@@ -247,7 +296,6 @@ export default {
           .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
           .then((response) => {
             console.log("Data deleted: " + response.data);
-            alert("Sor törölve");
             this.refreshData();
           })
           .catch((error) => {
@@ -266,7 +314,6 @@ export default {
           )
           .then((response) => {
             console.log("Data saved: " + response.data);
-            alert("Sor mentve");
             this.refreshData();
           })
           .catch((error) => {

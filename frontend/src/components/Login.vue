@@ -61,11 +61,6 @@ export default {
         .doesUserExist(this.userName)
         .then((response) => {
           this.validation = response.data;
-          if (!response.data) {
-            setTimeout(() => {
-              this.checkUser();
-            }, 5000);
-          }
         })
         .catch((error) => {
           console.log(error);
@@ -85,7 +80,7 @@ export default {
               this.$router.push({ name: "Attendance" });
             }
           } else {
-            alert("Hibás adatok");
+            throw new Error();
           }
         })
         .catch((error) => {

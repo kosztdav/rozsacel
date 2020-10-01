@@ -48,7 +48,7 @@ public class BackendService {
     public User getUserData(String userName, String password) {
         User user = userRepo.findByUserNameAndPassword(userName, password);
         if (user == null) {
-            throw new IllegalArgumentException();
+            throw  new IllegalArgumentException();
         }
         return user;
     }
@@ -98,7 +98,9 @@ public class BackendService {
         LocalDate date = LocalDate.of(year, month, day);
 
         Attendance attendance = attendanceRepo.findByUserAndDate(user, date);
-        attendanceRepo.delete(attendance);
+        if(attendance!=null){
+            attendanceRepo.delete(attendance);
+        }
     }
 
     public void changePassword(int userId, String oldPass, String newPass) {

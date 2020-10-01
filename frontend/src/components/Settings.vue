@@ -44,7 +44,7 @@ export default {
             this.oldPass = "";
             this.newPass = "";
           } else {
-            alert("Hibás adatok");
+            throw new Error();
           }
         })
         .catch((error) => {
