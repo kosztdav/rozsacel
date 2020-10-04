@@ -30,16 +30,18 @@
           :busy="isBusy"
         >
           <template v-slot:table-busy>
-            <div class="text-center text-danger my-2">
+            <div class="text-center my-2">
               <b-spinner class="align-middle" variant="dark"></b-spinner>
-              <strong style="color: black"> {{ busyText }}...</strong>
+              <strong> {{ busyText }}...</strong>
             </div>
           </template>
           <template v-slot:table-colgroup="scope">
             <col
               v-for="field in scope.fields"
               :key="field.key"
-              :style="{ width: '20%' }"
+              :style="
+                field.key != 'action' ? { width: '22%' } : { width: '12%' }
+              "
             />
           </template>
           <template v-slot:cell(day)="row">
@@ -53,47 +55,35 @@
             </div>
           </template>
           <template v-slot:cell(from)="row">
-            <div v-if="editedRow != row.item">{{ row.item.from }}</div>
-            <div v-else>
-              <vue-timepicker
-                :minute-interval="10"
-                v-model="editedRow.from"
-              ></vue-timepicker>
-            </div>
+            <div>{{ row.item.from }}</div>
           </template>
           <template v-slot:cell(to)="row">
-            <div v-if="editedRow != row.item">{{ row.item.to }}</div>
-            <div v-else>
-              <vue-timepicker
-                :minute-interval="10"
-                v-model="editedRow.to"
-              ></vue-timepicker>
-            </div>
+            <div>{{ row.item.to }}</div>
           </template>
           <template v-slot:cell(place)="row">
-            <div v-if="editedRow != row.item">{{ row.item.place.name }}</div>
-            <div v-else>
-              <v-select
-                :options="workPlaces"
-                v-model="editedRow.place"
-                label="name"
-              />
-            </div>
+            <div>{{ row.item.place.name }}</div>
           </template>
           <template v-slot:cell(action)="row">
             <div class="text-center">
               <div v-if="editedRow == null && isEditable(row.item.index)">
-                <button
-                  class="btn btn-dark btn-sm"
-                  @click="editedRow = row.item"
+                <div
+                  class="btn"
+                  @click="
+                    (editedRow = JSON.parse(JSON.stringify(row.item))),
+                      $bvModal.show('modal')
+                  "
                 >
-                  Szerkesztés
-                </button>
+                  <img src="../assets/modify.png" width="25" alt="" />
+                </div>
               </div>
-              <div v-else-if="editedRow == row.item">
-                <button class="btn btn-dark btn-sm" @click="save">
-                  Mentés
-                </button>
+              <div v-else-if="compare(editedRow, row.item)">
+                <div class="text-center my-2">
+                  <b-spinner
+                    small
+                    class="align-middle"
+                    variant="dark"
+                  ></b-spinner>
+                </div>
               </div>
             </div>
           </template>
@@ -107,6 +97,49 @@
           </i>
         </div>
       </div>
+    </div>
+    <div>
+      <!-- MODAL -->
+      <b-modal id="modal" title="Jelenlét rögzítés" @hide="hide">
+        <div v-if="editedRow">
+          <div class="row">
+            <div class="col">
+              <label>Mettől</label>
+              <div>
+                <vue-timepicker
+                  :minute-interval="10"
+                  v-model="editedRow.from"
+                ></vue-timepicker>
+              </div>
+            </div>
+            <div class="col">
+              <label>Meddig</label>
+              <div>
+                <vue-timepicker
+                  :minute-interval="10"
+                  v-model="editedRow.to"
+                ></vue-timepicker>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <label>Helyszín</label>
+              <v-select
+                :options="workPlaces"
+                v-model="editedRow.place"
+                label="name"
+              />
+            </div>
+          </div>
+        </div>
+        <template v-slot:modal-footer="{ cancel }">
+          <b-button size="sm" variant="dark" @click="save">Mentés</b-button>
+          <b-button size="sm" variant="outline-dark" @click="cancel()"
+            >Mégsem</b-button
+          >
+        </template>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -138,6 +171,11 @@ export default {
       month: today,
       tblKey: 0,
       editedRow: null,
+      dataToSave: {
+        from: "",
+        to: "",
+        place: {},
+      },
       userId: null,
       isBusy: true,
       timeSheet: [],
@@ -244,6 +282,9 @@ export default {
         (today.getDate() == idx || today.getDate() == idx + 1)
       );
     },
+    compare(a, b) {
+      return JSON.stringify(a) === JSON.stringify(b);
+    },
     getData() {
       this.tableData = new Array();
       //console.log("getData");
@@ -283,15 +324,16 @@ export default {
       this.getData();
       this.getTimeSheet();
     },
+    hide() {
+      this.$bvModal.hide("modal");
+      this.editedRow = null;
+    },
     save() {
       var r = this.editedRow;
+      this.$bvModal.hide("modal");
       this.busyText = "Mentés";
       this.isBusy = true;
-      if (
-        this.editedRow.place == null ||
-        this.editedRow.from == "" ||
-        this.editedRow.to == ""
-      ) {
+      if (r.place == null || r.from == "" || r.to == "") {
         api
           .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
           .then((response) => {
