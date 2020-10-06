@@ -76,7 +76,11 @@
                   <img src="../assets/modify.png" width="25" alt="" />
                 </div>
               </div>
-              <div v-else-if="compare(editedRow, row.item)">
+              <div
+                v-else-if="
+                  editedRow != null && editedRow.index == row.item.index
+                "
+              >
                 <div class="text-center my-2">
                   <b-spinner
                     small
@@ -91,7 +95,11 @@
             <span></span>
           </template>
         </b-table>
-        <div class="alert alert-dark" role="alert" v-if="yNumber != 1970">
+        <div
+          class="alert alert-dark pb-3"
+          role="alert"
+          v-if="yNumber != 1970 && !isBusy"
+        >
           <i>
             <b>Összesen: {{ hours }}</b>
           </i>
@@ -100,7 +108,12 @@
     </div>
     <div>
       <!-- MODAL -->
-      <b-modal id="modal" title="Jelenlét rögzítés" @hide="hide">
+      <b-modal
+        id="modal"
+        title="Jelenlét rögzítés"
+        @hide="hide"
+        no-close-on-backdrop
+      >
         <div v-if="editedRow">
           <div class="row">
             <div class="col">
@@ -171,11 +184,6 @@ export default {
       month: today,
       tblKey: 0,
       editedRow: null,
-      dataToSave: {
-        from: "",
-        to: "",
-        place: {},
-      },
       userId: null,
       isBusy: true,
       timeSheet: [],
@@ -212,8 +220,10 @@ export default {
       ],
     };
   },
+
   computed: {
     ...mapGetters(["isAdmin", "user", "workPlaces"]),
+
     daysOfMonth() {
       var date = new Date(this.month);
       var mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -222,14 +232,17 @@ export default {
 
       return numberOfDays;
     },
+
     mNumber() {
       var date = new Date(this.month);
       return date.getMonth();
     },
+
     yNumber() {
       var date = new Date(this.month);
       return date.getFullYear();
     },
+
     hours() {
       var hours = 0;
       var minutes = 0;
@@ -260,6 +273,7 @@ export default {
       return hours + " óra " + minutes + " perc";
     },
   },
+
   mounted() {
     if (this.id == null) {
       this.userId = this.user.id;
@@ -270,6 +284,7 @@ export default {
     this.getData();
     this.getTimeSheet();
   },
+
   methods: {
     isEditable(idx) {
       if (this.user.role) {
@@ -282,12 +297,9 @@ export default {
         (today.getDate() == idx || today.getDate() == idx + 1)
       );
     },
-    compare(a, b) {
-      return JSON.stringify(a) === JSON.stringify(b);
-    },
+
     getData() {
       this.tableData = new Array();
-      //console.log("getData");
       for (let i = 0; i < this.daysOfMonth; i++) {
         this.tableData[i] = {
           index: i + 1,
@@ -299,8 +311,8 @@ export default {
       this.tblKey++;
       this.editedRow = null;
     },
+
     getTimeSheet() {
-      //console.log("getTimeSheet");
       api
         .getTimeSheet(this.userId, this.yNumber, this.mNumber + 1)
         .then((response) => {
@@ -320,14 +332,17 @@ export default {
           console.log(error);
         });
     },
+
     refreshData() {
       this.getData();
       this.getTimeSheet();
     },
+
     hide() {
       this.$bvModal.hide("modal");
       this.editedRow = null;
     },
+
     save() {
       var r = this.editedRow;
       this.$bvModal.hide("modal");
@@ -365,6 +380,7 @@ export default {
       this.editedRow = null;
     },
   },
+
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       if (store.state.user != null) {
@@ -376,6 +392,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .tbl {
   overflow: inherit;
