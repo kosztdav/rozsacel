@@ -1,46 +1,69 @@
 <template>
   <div>
-    <div>
-      <div class="header row">
-        <div v-if="user==null" class="text-right pr-2">Nincs bejelentkezve</div>
-        <div v-else>
-          <div v-if="isMobile">
-            <div class="ml-3">
-              <Menu />
-            </div>
-          </div>
-          <div class="text-right pr-2">{{user.name}}</div>
-        </div>
+    <nav class="navbar navbar-dark bg-dark">
+      <button
+        v-if="user != null && isMobile"
+        class="navbar-toggler"
+        type="button"
+        @click="openMenu"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-brand" v-if="user == null">Nincs bejelentkezve</div>
+      <div class="navbar-brand" v-else>{{ user.name }}</div>
+    </nav>
+
+    <div class="container">
+      <div v-if="isMobile" class="pt-3 pb-3 text-center mr-5">
+        <img src="../assets/rose.png" width="50%" />
+      </div>
+      <div v-else class="pt-3 pb-3 text-center mr-5">
+        <img class="btn" src="../assets/rose.png" width="20%" />
       </div>
     </div>
-    <div v-if="isMobile" class="pt-3 pb-3 text-center mr-5">
-      <img src="../assets/rose.png" width="50%" />
-    </div>
-    <div v-else class="pt-3 pb-3 text-center mr-5">
-      <img class="btn" src="../assets/rose.png" width="20%" />
-    </div>
+
     <hr />
+    <div v-if="user != null && isMobile">
+      <Slide
+        :isOpen="open"
+        noOverlay
+        :closeOnNavigation="true"
+        :burgerIcon="false"
+        @closeMenu="open = false"
+      >
+        <div
+          v-for="(btn, idx) in isAdmin ? adminButtons : userButtons"
+          :key="idx"
+        >
+          <router-link :to="btn.url" tag="div">
+            <span>{{ btn.text }}</span>
+          </router-link>
+        </div>
+      </Slide>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import myMixin from "../mixins/myMixin";
-import Menu from "./Menu";
 
 export default {
-  components: {
-    Menu,
+  data() {
+    return {
+      open: false,
+    };
+  },
+  methods: {
+    openMenu(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.open = true;
+    },
   },
   mixins: [myMixin],
   computed: {
-    ...mapGetters(["user"]),
-    menuStyle() {
-      if (window.innerWidth > 550) {
-        return "Elfordítva";
-      }
-      return "Állítva";
-    },
+    ...mapGetters(["user", "isAdmin"]),
   },
 };
 </script>

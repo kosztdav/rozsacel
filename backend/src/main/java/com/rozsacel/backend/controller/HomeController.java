@@ -97,4 +97,11 @@ public class HomeController {
         return service.getWageOfEmployee(id, year, month);
     }
 
+    @RequestMapping(path = "/saveEmployee", method = POST, produces = "application/json")
+    @ResponseBody
+    public String saveEmployee(@RequestBody User user) {
+        service.saveUser(user);
+        return "OK";
+    }
+
 }

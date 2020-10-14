@@ -78,4 +78,8 @@ export default {
     getReport(id, year, month) {
         return instance.get("getReport/" + id + "/" + year + "/" + month);
     },
+
+    saveEmployee(employee) {
+        return instance.post("saveEmployee", employee);
+    }
 }

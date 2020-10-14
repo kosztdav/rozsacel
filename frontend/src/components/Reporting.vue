@@ -2,37 +2,102 @@
   <div class="container">
     <div class="pb-3">
       <label>Válassz dolgozót</label>
-      <v-select :options="employees" @input="getReport" v-model="selectedEmployee" label="name" />
+      <v-select
+        :options="employees"
+        @input="getReport"
+        v-model="selectedEmployee"
+        label="name"
+      />
     </div>
     <div v-if="selectedEmployee">
-      <vue-monthly-picker @input="getReport" :monthLabels="monthLabels" v-model="month"></vue-monthly-picker>
+      <vue-monthly-picker
+        @input="getReport"
+        :monthLabels="monthLabels"
+        v-model="month"
+      ></vue-monthly-picker>
     </div>
     <div class="mt-3" v-if="selectedEmployee && reportData.length != 0">
-      <b-table responsive :items="reportData" :fields="fields" class="text-center">
+      <b-table
+        foot-variant="light"
+        foot-clone
+        responsive
+        :items="reportData"
+        :fields="fields"
+        class="text-center"
+      >
         <template v-slot:head(workPlace)="row">
           <div class="text-left">{{ row.label }}</div>
         </template>
         <template v-slot:cell(workPlace)="row">
-          <div class="text-left">{{row.item.workPlace}}</div>
+          <div class="text-left">{{ row.item.workPlace }}</div>
         </template>
         <template v-slot:head(days)="row">
           <div>
-            <div>{{row.label}}</div>
+            <div>{{ row.label }}</div>
             <div>
               <small class="text-muted">(Összesen)</small>
             </div>
           </div>
         </template>
-        <template v-slot:cell(hours)="row">
-          <div v-if="row.item.minutes == 0">{{row.item.hours + ":00"}}</div>
-          <div v-else>{{row.item.hours + ":"+row.item.minutes}}</div>
+
+        <template v-slot:cell(weekendWage)="row">
+          <div>
+            {{
+              (row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
+                | currencyFormat
+            }}
+          </div>
         </template>
+
+        <template v-slot:cell(normalWage)="row">
+          <div>
+            {{
+              (row.item.hours * selectedEmployee.wagePerHour) | currencyFormat
+            }}
+          </div>
+        </template>
+
         <template v-slot:cell(wage)="row">
-          <div>{{row.item.hours *1300 + row.item.weekendDays * 5000 + row.item.overtime*500}}</div>
+          <div>
+            {{
+              (row.item.hours * selectedEmployee.wagePerHour +
+                row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
+                | currencyFormat
+            }}
+          </div>
+        </template>
+        <template v-slot:foot(workPlace)>
+          <div class="text-left">
+            <div>Alapbér: {{ selectedEmployee.baseWage | currencyFormat }}</div>
+            <div>
+              Órabér: {{ selectedEmployee.wagePerHour | currencyFormat }}
+            </div>
+          </div>
+        </template>
+        <template v-slot:foot(days)>
+          {{ days }}
+        </template>
+        <template v-slot:foot(hours)>
+          {{ hours }}
+        </template>
+        <template v-slot:foot(normalWage)>
+          {{ normalWage | currencyFormat }}
+        </template>
+        <template v-slot:foot(weekendHours)>
+          {{ weekendHours }}
+        </template>
+        <template v-slot:foot(weekendWage)>
+          {{ weekendWage | currencyFormat }}
+        </template>
+        <template v-slot:foot(wage)>
+          {{
+            (selectedEmployee.baseWage + normalWage + weekendWage)
+              | currencyFormat
+          }}
         </template>
       </b-table>
     </div>
-    <div class="mt-3" v-else-if="selectedEmployee && reportData.length ==0">
+    <div class="mt-3" v-else-if="selectedEmployee && reportData.length == 0">
       <div class="alert alert-dark text-center" role="alert">
         <i>
           <b>Nincs adat a választott hónapról</b>
@@ -78,21 +143,23 @@ export default {
           label: "Órák",
         },
         {
-          key: "halfDays",
-          label: "Félnapok",
+          key: "normalWage",
+          label: "Bér",
+          variant: "danger",
         },
         {
-          key: "weekendDays",
-          label: "Hétvége",
+          key: "weekendHours",
+          label: "Hétvégi órák",
         },
         {
-          key: "overtime",
-          label: "Túlóra",
+          key: "weekendWage",
+          label: "Hétvég bér",
+          variant: "danger",
         },
         {
           key: "wage",
-          label: "Bér",
-          variant: "danger",
+          label: "Össz bér",
+          variant: "secondary",
         },
       ],
       monthLabels: [
@@ -121,6 +188,41 @@ export default {
       var date = new Date(this.month);
       return date.getFullYear();
     },
+    days() {
+      var days = 0;
+      this.reportData.forEach((el) => {
+        days += el.days;
+      });
+      return days;
+    },
+    hours() {
+      var hours = 0;
+      this.reportData.forEach((el) => {
+        hours += el.hours;
+      });
+      return hours;
+    },
+    normalWage() {
+      var wage = 0;
+      this.reportData.forEach((el) => {
+        wage += el.hours;
+      });
+      return wage * this.selectedEmployee.wagePerHour;
+    },
+    weekendHours() {
+      var weekend = 0;
+      this.reportData.forEach((el) => {
+        weekend += el.weekendHours;
+      });
+      return weekend;
+    },
+    weekendWage() {
+      var weekend = 0;
+      this.reportData.forEach((el) => {
+        weekend += el.weekendHours;
+      });
+      return weekend * this.selectedEmployee.wagePerHour * 1.5;
+    },
   },
   methods: {
     getReport() {
@@ -133,6 +235,15 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+  },
+  filters: {
+    currencyFormat(number) {
+      return new Intl.NumberFormat("hu-HU", {
+        style: "currency",
+        currency: "HUF",
+        minimumFractionDigits: 0,
+      }).format(number);
     },
   },
   beforeRouteEnter(to, from, next) {

@@ -14,7 +14,13 @@
           <input class="form-control" v-model="filter" />
         </div>
         <div class="col text-right">
-          <b-button class="btn btn-dark btn-sm" v-b-modal.modal>Új helyszín</b-button>
+          <p class="h4 mb-2">
+            <b-icon
+              style="cursor: pointer"
+              icon="plus-square"
+              v-b-modal.modal
+            ></b-icon>
+          </p>
         </div>
       </div>
     </div>
@@ -34,26 +40,37 @@
           <div class="text-center">{{ row.label }}</div>
         </template>
         <template v-slot:table-colgroup="scope">
-          <col v-for="field in scope.fields" :key="field.key" :style="{ width: '33%' }" />
+          <col
+            v-for="field in scope.fields"
+            :key="field.key"
+            :style="field.key != 'action' ? { width: '44%' } : { width: '12%' }"
+          />
         </template>
         <template v-slot:cell(name)="row">
-          <div v-if="editedRow!=row.item">{{row.item.name}}</div>
-          <div v-else-if="editedRow==row.item">
+          <div v-if="editedRow != row.item">{{ row.item.name }}</div>
+          <div v-else-if="editedRow == row.item">
             <input v-model="editedRow.name" class="form-control" />
           </div>
         </template>
         <template v-slot:cell(status)="row">
           <div class="text-center">
-            <b-form-checkbox :disabled="editedRow != row.item" v-model="row.item.active"></b-form-checkbox>
+            <b-form-checkbox
+              :disabled="editedRow != row.item"
+              v-model="row.item.active"
+            ></b-form-checkbox>
           </div>
         </template>
         <template v-slot:cell(action)="row">
           <div class="text-center">
             <div v-if="editedRow == null">
-              <button class="btn btn-dark btn-sm" @click="editedRow = row.item">Szerkesztés</button>
+              <div class="btn" @click="editedRow = row.item">
+                <img src="../assets/modify.png" width="25" alt="" />
+              </div>
             </div>
-            <div v-else-if="editedRow==row.item">
-              <button class="btn btn-dark btn-sm" @click="saveWorkPlace">Mentés</button>
+            <div v-else-if="editedRow == row.item">
+              <button class="btn btn-dark btn-sm" @click="saveWorkPlace">
+                Mentés
+              </button>
             </div>
           </div>
         </template>
@@ -85,9 +102,17 @@
           </div>
         </div>
       </div>
-      <template v-slot:modal-footer="{ ok, cancel}">
-        <b-button size="sm" variant="dark" @click="newWorkPlace(), ok()">Mentés</b-button>
-        <b-button size="sm" variant="outline-dark" @click="cancel()">Mégsem</b-button>
+      <template v-slot:modal-footer="{ ok, cancel }">
+        <b-button
+          size="sm"
+          variant="dark"
+          :disabled="!workPlace.name"
+          @click="newWorkPlace(), ok()"
+          >Mentés</b-button
+        >
+        <b-button size="sm" variant="outline-dark" @click="cancel()"
+          >Mégsem</b-button
+        >
       </template>
     </b-modal>
   </div>

@@ -88,22 +88,6 @@ export default {
           alert("Hibás adatok");
         });
     },
-    getEmployees() {
-      api
-        .getAllUsers()
-        .then((response) => {
-          var employees = new Array();
-          response.data.forEach((employee) => {
-            if (!employee.role) {
-              employees.push(employee);
-            }
-          });
-          this.setEmployees({ employees });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
   },
 };
 </script>

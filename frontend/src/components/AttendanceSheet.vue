@@ -120,7 +120,7 @@
               <label>Mettől</label>
               <div>
                 <vue-timepicker
-                  :minute-interval="10"
+                  :minute-interval="30"
                   v-model="editedRow.from"
                 ></vue-timepicker>
               </div>
@@ -129,7 +129,7 @@
               <label>Meddig</label>
               <div>
                 <vue-timepicker
-                  :minute-interval="10"
+                  :minute-interval="30"
                   v-model="editedRow.to"
                 ></vue-timepicker>
               </div>

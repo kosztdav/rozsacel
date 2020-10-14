@@ -1,8 +1,10 @@
 <template>
-  <div class="container">
+  <div>
     <Header />
-    <Menu v-if="user!=null && !isMobile" />
-    <router-view />
+    <div class="container">
+      <Menu v-if="user != null && !isMobile" />
+      <router-view />
+    </div>
   </div>
 </template>
 

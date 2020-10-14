@@ -136,14 +136,23 @@ public class BackendService {
                 dto.workPlace = objectArray[0].toString();
                 dto.days = Integer.parseInt(objectArray[1].toString());
                 dto.hours = Integer.parseInt(objectArray[2].toString());
-                dto.minutes = Integer.parseInt(objectArray[3].toString());
-                dto.halfDays = Integer.parseInt(objectArray[4].toString());
-                dto.weekendDays = Integer.parseInt(objectArray[5].toString());
-                dto.overtime = Integer.parseInt(objectArray[6].toString());
-                dtos.add(dto);
+                dto.weekendHours = Integer.parseInt(objectArray[3].toString());
+                dto.hours -= dto.weekendHours;
+                if(!dto.workPlace.equals("Hétvége") && !dto.workPlace.equals("Szabi") && !dto.workPlace.equals("Betegállomány")){
+                    dtos.add(dto);
+                }
+
             }
         }
         return dtos;
     }
 
+    public void saveUser(User user) {
+        User u = userRepo.findById(user.getId()).get();
+        u.setName(user.getName());
+        u.setUserName(user.getUserName());
+        u.setBaseWage(user.getBaseWage());
+        u.setWagePerHour(user.getWagePerHour());
+        userRepo.save(u);
+    }
 }
