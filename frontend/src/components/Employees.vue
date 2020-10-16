@@ -25,7 +25,7 @@
                 $bvModal.show('modal');
               "
             >
-              <img src="../assets/modify.png" width="25" alt="" />
+              <img src="../assets/edit.png" width="25" alt="" />
             </div>
           </div>
           <div v-else-if="editedRow != null && editedRow.index == row.index">

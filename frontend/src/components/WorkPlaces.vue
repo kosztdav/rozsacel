@@ -64,7 +64,7 @@
           <div class="text-center">
             <div v-if="editedRow == null">
               <div class="btn" @click="editedRow = row.item">
-                <img src="../assets/modify.png" width="25" alt="" />
+                <img src="../assets/edit.png" width="25" alt="" />
               </div>
             </div>
             <div v-else-if="editedRow == row.item">

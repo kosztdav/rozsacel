@@ -15,10 +15,10 @@
 
     <div class="container">
       <div v-if="isMobile" class="pt-3 pb-3 text-center mr-5">
-        <img src="../assets/rose.png" width="50%" />
+        <img src="../assets/roseicon.png" width="70%" />
       </div>
       <div v-else class="pt-3 pb-3 text-center mr-5">
-        <img class="btn" src="../assets/rose.png" width="20%" />
+        <img class="btn" src="../assets/roseicon.png" width="40%" />
       </div>
     </div>
 

@@ -2,8 +2,19 @@
   <div class="container">
     <div class="pb-3">
       <div class="mt-3">
-        <b-nav tabs :small="isMobile">
+        <b-nav
+          class="mynav"
+          :tabs="!isMobile"
+          :pills="isMobile"
+          :small="isMobile"
+        >
           <b-nav-item
+            :class="chosen == index ? 'bold' : ''"
+            :style="
+              isMobile && chosen == index
+                ? ' border: black 1px solid; background-color:white;'
+                : ''
+            "
             :active="chosen == index"
             v-for="(employee, index) in employees"
             @click="chosen = index"
@@ -56,5 +67,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.nav-item.nav-item.nav-item a {
+  color: black;
+}
+.bold {
+  font-weight: bold;
+}
 </style>

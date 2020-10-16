@@ -145,7 +145,7 @@ export default {
         {
           key: "normalWage",
           label: "Bér",
-          variant: "danger",
+          variant: "success",
         },
         {
           key: "weekendHours",
@@ -154,12 +154,12 @@ export default {
         {
           key: "weekendWage",
           label: "Hétvég bér",
-          variant: "danger",
+          variant: "success",
         },
         {
           key: "wage",
           label: "Össz bér",
-          variant: "secondary",
+          variant: "danger",
         },
       ],
       monthLabels: [
