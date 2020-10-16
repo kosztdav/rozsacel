@@ -2,18 +2,10 @@
   <div class="container">
     <div class="pb-3">
       <div class="mt-3">
-        <b-nav
-          class="mynav"
-          :tabs="!isMobile"
-          :pills="isMobile"
-          :small="isMobile"
-        >
+        <b-nav :tabs="!isMobile" :pills="isMobile" :small="isMobile">
           <b-nav-item
-            :class="chosen == index ? 'bold' : ''"
             :style="
-              isMobile && chosen == index
-                ? ' border: black 1px solid; background-color:white;'
-                : ''
+              isMobile && chosen == index ? ' border: black 1px solid;' : ''
             "
             :active="chosen == index"
             v-for="(employee, index) in employees"
@@ -71,7 +63,8 @@ export default {
 .nav-item.nav-item.nav-item a {
   color: black;
 }
-.bold {
+.nav-item.nav-item.nav-item a.active {
+  background-color: white;
   font-weight: bold;
 }
 </style>

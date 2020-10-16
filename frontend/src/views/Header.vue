@@ -14,10 +14,10 @@
     </nav>
 
     <div class="container">
-      <div v-if="isMobile" class="pt-3 pb-3 text-center mr-5">
+      <div v-if="isMobile" class="pt-3 pb-3 text-center">
         <img src="../assets/roseicon.png" width="70%" />
       </div>
-      <div v-else class="pt-3 pb-3 text-center mr-5">
+      <div v-else class="pt-3 pb-3 text-center">
         <img class="btn" src="../assets/roseicon.png" width="40%" />
       </div>
     </div>
