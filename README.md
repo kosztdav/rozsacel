@@ -19,7 +19,7 @@ npm run serve
 mvn install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles for development
 ```
 mvn spring-boot:run
 ```
