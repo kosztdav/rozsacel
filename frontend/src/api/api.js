@@ -48,7 +48,7 @@ export default {
     },
 
     deleteTimeSheet(userId, year, month, day) {
-        var bodyFormData = new FormData();
+        const bodyFormData = new FormData();
         bodyFormData.set('userId', userId);
         bodyFormData.set('year', year);
         bodyFormData.set('month', month + 1);
@@ -57,7 +57,7 @@ export default {
     },
 
     changePassword(userId, oldPass, newPass) {
-        var bodyFormData = new FormData();
+        const bodyFormData = new FormData();
         bodyFormData.set('userId', userId);
         bodyFormData.set('oldPass', oldPass);
         bodyFormData.set('newPass', newPass);
@@ -69,7 +69,7 @@ export default {
     },
 
     newWorkPlace(workPlace) {
-        var bodyFormData = new FormData();
+        const bodyFormData = new FormData();
         bodyFormData.set('name', workPlace.name);
         bodyFormData.set('isActive', workPlace.isActive);
         return instance.post("newWorkPlace", bodyFormData);

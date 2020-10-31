@@ -1,13 +1,22 @@
 <template>
   <div class="container">
     <div class="pb-3">
+      <label>Válassz dolgozót</label>
+      <v-select
+          :options="employees"
+          @input="getReport"
+          v-model="selectedEmployee"
+          label="name"
+      />
+    </div>
+    <div v-if="selectedEmployee">
       <vue-monthly-picker
           @input="getReport"
           :monthLabels="monthLabels"
           v-model="month"
       ></vue-monthly-picker>
     </div>
-    <div class="mt-3" v-if="user && reportData.length != 0">
+    <div class="mt-3" v-if="selectedEmployee && reportData.length != 0">
       <b-table
           foot-variant="light"
           foot-clone
@@ -22,10 +31,19 @@
         <template v-slot:cell(workPlace)="row">
           <div class="text-left">{{ row.item.workPlace }}</div>
         </template>
+        <template v-slot:head(days)="row">
+          <div>
+            <div>{{ row.label }}</div>
+            <div>
+              <small class="text-muted">(Összesen)</small>
+            </div>
+          </div>
+        </template>
+
         <template v-slot:cell(weekendWage)="row">
           <div>
             {{
-              (row.item.weekendHours * (user.wagePerHour * 1.5))
+              (row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
                   | currencyFormat
             }}
           </div>
@@ -34,7 +52,7 @@
         <template v-slot:cell(normalWage)="row">
           <div>
             {{
-              (row.item.hours * user.wagePerHour) | currencyFormat
+              (row.item.hours * selectedEmployee.wagePerHour) | currencyFormat
             }}
           </div>
         </template>
@@ -42,17 +60,17 @@
         <template v-slot:cell(wage)="row">
           <div>
             {{
-              (row.item.hours * user.wagePerHour +
-                  row.item.weekendHours * (user.wagePerHour * 1.5))
+              (row.item.hours * selectedEmployee.wagePerHour +
+                  row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
                   | currencyFormat
             }}
           </div>
         </template>
         <template v-slot:foot(workPlace)>
           <div class="text-left">
-            <div>Alapbér: {{ user.baseWage | currencyFormat }}</div>
+            <div>Alapbér: {{ selectedEmployee.baseWage | currencyFormat }}</div>
             <div>
-              Órabér: {{ user.wagePerHour | currencyFormat }}
+              Órabér: {{ selectedEmployee.wagePerHour | currencyFormat }}
             </div>
           </div>
         </template>
@@ -73,13 +91,13 @@
         </template>
         <template v-slot:foot(wage)>
           {{
-            (user.baseWage + normalWage + weekendWage)
+            (selectedEmployee.baseWage + normalWage + weekendWage)
                 | currencyFormat
           }}
         </template>
       </b-table>
     </div>
-    <div class="mt-3" v-else-if="user && reportData.length == 0">
+    <div class="mt-3" v-else-if="selectedEmployee && reportData.length == 0">
       <div class="alert alert-dark text-center" role="alert">
         <i>
           <b>Nincs adat a választott hónapról</b>
@@ -102,12 +120,13 @@ export default {
     BTable,
   },
   data() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0");
-    var yyyy = today.getFullYear();
+    let today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const yyyy = today.getFullYear();
     today = mm + "/" + dd + "/" + yyyy;
     return {
+      selectedEmployee: null,
       reportData: [],
       month: today,
       fields: [
@@ -160,7 +179,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["employees", "user"]),
+    ...mapGetters(["employees"]),
     mNumber() {
       const date = new Date(this.month);
       return date.getMonth() + 1;
@@ -188,7 +207,7 @@ export default {
       this.reportData.forEach((el) => {
         wage += el.hours;
       });
-      return wage * this.user.wagePerHour;
+      return wage * this.selectedEmployee.wagePerHour;
     },
     weekendHours() {
       let weekend = 0;
@@ -202,16 +221,13 @@ export default {
       this.reportData.forEach((el) => {
         weekend += el.weekendHours;
       });
-      return weekend * this.user.wagePerHour * 1.5;
+      return weekend * this.selectedEmployee.wagePerHour * 1.5;
     },
-  },
-  mounted() {
-    this.getReport();
   },
   methods: {
     getReport() {
       api
-          .getReport(this.user.id, this.yNumber, this.mNumber)
+          .getReport(this.selectedEmployee.id, this.yNumber, this.mNumber)
           .then((response) => {
             console.log("Data loaded");
             this.reportData = response.data;
@@ -232,7 +248,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      if (store.state.user != null) {
+      if (store.state.user != null && store.state.user.role) {
         next();
       } else {
         next("/");

@@ -1,5 +1,5 @@
 import api from "../api/api";
-import { mapActions } from "vuex";
+import {mapActions} from "vuex";
 
 export default {
     data() {
@@ -10,6 +10,11 @@ export default {
 
                     url: "/jelenlet",
                     icon: "calendar3",
+                },
+                {
+                    text: "Report",
+                    url: "/osszegzes",
+                    icon: "newspaper"
                 },
                 {
                     text: "Beállítások",
@@ -34,7 +39,11 @@ export default {
                     url: "/dolgozok",
                     icon: "person-lines-fill",
                 },
-                { text: "Report", url: "/report", icon: "newspaper" },
+                {
+                    text: "Report",
+                    url: "/report",
+                    icon: "newspaper"
+                },
                 {
                     text: "Beállítások",
                     url: "/beallitasok",
@@ -59,8 +68,8 @@ export default {
                             places.push(place);
                         }
                     });
-                    this.setWorkPlaces({ places });
-                    this.setAllWorkPlaces({ places: response.data });
+                    this.setWorkPlaces({places});
+                    this.setAllWorkPlaces({places: response.data});
                 })
                 .catch((error) => {
                     console.log(error);
@@ -76,7 +85,7 @@ export default {
                             employees.push(employee);
                         }
                     });
-                    this.setEmployees({ employees });
+                    this.setEmployees({employees});
                 })
                 .catch((error) => {
                     console.log(error);

@@ -173,10 +173,10 @@ export default {
     BTable,
   },
   data() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0");
-    var yyyy = today.getFullYear();
+    let today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const yyyy = today.getFullYear();
     today = mm + "/" + dd + "/" + yyyy;
 
     return {
@@ -225,30 +225,30 @@ export default {
     ...mapGetters(["isAdmin", "user", "workPlaces"]),
 
     daysOfMonth() {
-      var date = new Date(this.month);
-      var mm = String(date.getMonth() + 1).padStart(2, "0");
-      var yyyy = date.getFullYear();
-      var numberOfDays = new Date(yyyy, mm, 0).getDate();
+      const date = new Date(this.month);
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const yyyy = date.getFullYear();
+      const numberOfDays = new Date(yyyy, mm, 0).getDate();
 
       return numberOfDays;
     },
 
     mNumber() {
-      var date = new Date(this.month);
+      const date = new Date(this.month);
       return date.getMonth();
     },
 
     yNumber() {
-      var date = new Date(this.month);
+      const date = new Date(this.month);
       return date.getFullYear();
     },
 
     hours() {
-      var hours = 0;
-      var minutes = 0;
+      let hours = 0;
+      let minutes = 0;
       this.timeSheet.forEach((row) => {
-        var from = new Date();
-        var to = new Date();
+        const from = new Date();
+        const to = new Date();
         from.setHours(row.from.substring(0, 2));
         from.setMinutes(row.from.substring(3, 5));
         to.setHours(row.to.substring(0, 2));
