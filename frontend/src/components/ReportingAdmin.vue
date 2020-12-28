@@ -39,20 +39,34 @@
             </div>
           </div>
         </template>
-
+        <template v-slot:cell(hours)="row">
+          {{ row.item.hours }}
+          <span v-if="row.item.minutes != 0">
+            :{{ row.item.minutes }}
+          </span>
+          <span v-else>
+            :00
+          </span>
+        </template>
+        <template v-slot:cell(weekendHours)="row">
+          {{ row.item.weekendHours }}
+          <span v-if="row.item.weekendMinutes != 0">
+            :{{ row.item.weekendMinutes }}
+          </span>
+          <span v-else>
+            :00
+          </span>
+        </template>
         <template v-slot:cell(weekendWage)="row">
           <div>
-            {{
-              (row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
-                  | currencyFormat
-            }}
+            {{ (getWageOfPlace(row.index, true)) | currencyFormat }}
           </div>
         </template>
 
         <template v-slot:cell(normalWage)="row">
           <div>
             {{
-              (row.item.hours * selectedEmployee.wagePerHour) | currencyFormat
+              (getWageOfPlace(row.index)) | currencyFormat
             }}
           </div>
         </template>
@@ -60,9 +74,7 @@
         <template v-slot:cell(wage)="row">
           <div>
             {{
-              (row.item.hours * selectedEmployee.wagePerHour +
-                  row.item.weekendHours * (selectedEmployee.wagePerHour * 1.5))
-                  | currencyFormat
+              (getTotalWageOfPlace(row.index)) | currencyFormat
             }}
           </div>
         </template>
@@ -197,31 +209,51 @@ export default {
     },
     hours() {
       let hours = 0;
+      let minutes = 0;
       this.reportData.forEach((el) => {
         hours += el.hours;
+        minutes += el.minutes;
       });
-      return hours;
+      while (minutes >= 60) {
+        hours++;
+        minutes -= 60;
+      }
+      return hours + ":" + (minutes != 0 ? minutes : '00');
     },
     normalWage() {
-      let wage = 0;
+      let hours = 0;
+      let minutes = 0;
       this.reportData.forEach((el) => {
-        wage += el.hours;
+        hours += el.hours;
+        minutes += el.minutes;
       });
-      return wage * this.selectedEmployee.wagePerHour;
+      hours += minutes / 60;
+      let wage = hours * this.selectedEmployee.wagePerHour;
+      return wage;
     },
     weekendHours() {
       let weekend = 0;
+      let weekendMinutes = 0;
       this.reportData.forEach((el) => {
         weekend += el.weekendHours;
+        weekendMinutes += el.weekendMinutes;
       });
-      return weekend;
+      while (weekendMinutes >= 60) {
+        weekend++;
+        weekendMinutes -= 60;
+      }
+      return weekend + ":" + (weekendMinutes != 0 ? weekendMinutes : '00');
     },
     weekendWage() {
-      let weekend = 0;
+      let hours = 0;
+      let minutes = 0;
       this.reportData.forEach((el) => {
-        weekend += el.weekendHours;
+        hours += el.weekendHours;
+        minutes += el.weekendMinutes;
       });
-      return weekend * this.selectedEmployee.wagePerHour * 1.5;
+      hours += minutes / 60;
+      let wage = hours * this.selectedEmployee.wagePerHour * 1.5;
+      return wage;
     },
   },
   methods: {
@@ -236,6 +268,27 @@ export default {
             console.log(error);
           });
     },
+    getWageOfPlace(idx, isWeekend = false) {
+      let hours = 0;
+      let minutes = 0;
+      if (!isWeekend) {
+        hours = this.reportData[idx].hours;
+        minutes = this.reportData[idx].minutes;
+        hours += minutes / 60;
+        let wage = this.selectedEmployee.wagePerHour * hours;
+        return wage;
+      }
+      hours = this.reportData[idx].weekendHours;
+      minutes = this.reportData[idx].weekendMinutes;
+      hours += minutes / 60;
+      let wage = this.selectedEmployee.wagePerHour * hours * 1.5;
+      return wage;
+    },
+    getTotalWageOfPlace(idx) {
+      let normalWage = this.getWageOfPlace(idx);
+      let weekendWage = this.getWageOfPlace(idx, true);
+      return normalWage + weekendWage;
+    }
   },
   filters: {
     currencyFormat(number) {

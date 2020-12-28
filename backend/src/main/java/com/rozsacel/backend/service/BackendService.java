@@ -137,7 +137,8 @@ public class BackendService {
                 dto.days = Integer.parseInt(objectArray[1].toString());
                 dto.hours = Integer.parseInt(objectArray[2].toString());
                 dto.weekendHours = Integer.parseInt(objectArray[3].toString());
-                dto.hours -= dto.weekendHours;
+                dto.minutes = Integer.parseInt(objectArray[4].toString());
+                dto.weekendMinutes = Integer.parseInt(objectArray[5].toString());
                 if(!dto.workPlace.equals("Hétvége") && !dto.workPlace.equals("Szabi") && !dto.workPlace.equals("Betegállomány")){
                     dtos.add(dto);
                 }

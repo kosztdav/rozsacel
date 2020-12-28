@@ -7,5 +7,7 @@ public class WagePerLocationDto {
     public int days;
     public int hours;
     public int weekendHours;
+    public int minutes;
+    public int weekendMinutes;
 
 }

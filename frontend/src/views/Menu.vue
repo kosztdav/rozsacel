@@ -37,17 +37,5 @@ export default {
 </script>
 
 <style>
-.bm-burger-button {
-  margin-left: 7% !important;
-  width: 30px !important;
-  height: 25px !important;
-  left: 0px !important;
-  top: 12px !important;
-}
-.bm-burger-bars {
-  background-color: white !important;
-}
-.bm-item-list {
-  color: white !important;
-}
+
 </style>
