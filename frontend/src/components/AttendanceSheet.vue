@@ -11,9 +11,9 @@
           <div class="row">
             <div class="col">
               <vue-monthly-picker
-                @input="refreshData(), (isBusy = true), (busyText = 'Betöltés')"
-                :monthLabels="monthLabels"
-                v-model="month"
+                  @input="refreshData(), (isBusy = true), (busyText = 'Betöltés')"
+                  :monthLabels="monthLabels"
+                  v-model="month"
               ></vue-monthly-picker>
             </div>
           </div>
@@ -21,13 +21,13 @@
       </div>
       <div class="mt-3">
         <b-table
-          class="tbl"
-          responsive
-          outlined
-          :items="tableData"
-          :fields="fields"
-          :key="tblKey"
-          :busy="isBusy"
+            class="tbl"
+            responsive
+            outlined
+            :items="tableData"
+            :fields="fields"
+            :key="tblKey"
+            :busy="isBusy"
         >
           <template v-slot:table-busy>
             <div class="text-center my-2">
@@ -37,9 +37,9 @@
           </template>
           <template v-slot:table-colgroup="scope">
             <col
-              v-for="field in scope.fields"
-              :key="field.key"
-              :style="
+                v-for="field in scope.fields"
+                :key="field.key"
+                :style="
                 field.key != 'action' ? { width: '22%' } : { width: '12%' }
               "
             />
@@ -67,25 +67,25 @@
             <div class="text-center">
               <div v-if="editedRow == null && isEditable(row.item.index)">
                 <div
-                  class="btn"
-                  @click="
+                    class="btn"
+                    @click="
                     (editedRow = JSON.parse(JSON.stringify(row.item))),
                       $bvModal.show('modal')
                   "
                 >
-                  <img src="../assets/edit.png" width="25" alt="" />
+                  <img src="../assets/edit.png" width="25" alt=""/>
                 </div>
               </div>
               <div
-                v-else-if="
+                  v-else-if="
                   editedRow != null && editedRow.index == row.item.index
                 "
               >
                 <div class="text-center my-2">
                   <b-spinner
-                    small
-                    class="align-middle"
-                    variant="dark"
+                      small
+                      class="align-middle"
+                      variant="dark"
                   ></b-spinner>
                 </div>
               </div>
@@ -96,9 +96,9 @@
           </template>
         </b-table>
         <div
-          class="alert alert-dark pb-3"
-          role="alert"
-          v-if="yNumber != 1970 && !isBusy"
+            class="alert alert-dark pb-3"
+            role="alert"
+            v-if="yNumber != 1970 && !isBusy"
         >
           <i>
             <b>Összesen: {{ hours }}</b>
@@ -109,10 +109,10 @@
     <div>
       <!-- MODAL -->
       <b-modal
-        id="modal"
-        title="Jelenlét rögzítés"
-        @hide="hide"
-        no-close-on-backdrop
+          id="modal"
+          title="Jelenlét rögzítés"
+          @hide="hide"
+          no-close-on-backdrop
       >
         <div v-if="editedRow">
           <div class="row">
@@ -120,8 +120,8 @@
               <label>Mettől</label>
               <div>
                 <vue-timepicker
-                  :minute-interval="30"
-                  v-model="editedRow.from"
+                    :minute-interval="30"
+                    v-model="editedRow.from"
                 ></vue-timepicker>
               </div>
             </div>
@@ -129,8 +129,8 @@
               <label>Meddig</label>
               <div>
                 <vue-timepicker
-                  :minute-interval="30"
-                  v-model="editedRow.to"
+                    :minute-interval="30"
+                    v-model="editedRow.to"
                 ></vue-timepicker>
               </div>
             </div>
@@ -139,9 +139,9 @@
             <div class="col">
               <label>Helyszín</label>
               <v-select
-                :options="workPlaces"
-                v-model="editedRow.place"
-                label="name"
+                  :options="workPlaces"
+                  v-model="editedRow.place"
+                  label="name"
               />
             </div>
           </div>
@@ -149,7 +149,8 @@
         <template v-slot:modal-footer="{ cancel }">
           <b-button size="sm" variant="dark" @click="save">Mentés</b-button>
           <b-button size="sm" variant="outline-dark" @click="cancel()"
-            >Mégsem</b-button
+          >Mégsem
+          </b-button
           >
         </template>
       </b-modal>
@@ -160,9 +161,9 @@
 <script>
 import store from "../store/index";
 import VueMonthlyPicker from "vue-monthly-picker";
-import { BTable } from "bootstrap-vue";
+import {BTable} from "bootstrap-vue";
 import api from "../api/api";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   props: {
@@ -215,8 +216,8 @@ export default {
           key: "to",
           label: "Meddig",
         },
-        { key: "place", label: "Helyszín" },
-        { key: "action", label: "" },
+        {key: "place", label: "Helyszín"},
+        {key: "action", label: ""},
       ],
     };
   },
@@ -292,9 +293,9 @@ export default {
       }
       var today = new Date();
       return (
-        today.getMonth() == this.mNumber &&
-        today.getFullYear() == this.yNumber &&
-        (today.getDate() == idx || today.getDate() == idx + 1)
+          today.getMonth() == this.mNumber &&
+          today.getFullYear() == this.yNumber &&
+          (today.getDate() == idx || today.getDate() == idx + 1)
       );
     },
 
@@ -305,7 +306,7 @@ export default {
           index: i + 1,
           from: "",
           to: "",
-          place: { name: "" },
+          place: {name: ""},
         };
       }
       this.tblKey++;
@@ -314,23 +315,23 @@ export default {
 
     getTimeSheet() {
       api
-        .getTimeSheet(this.userId, this.yNumber, this.mNumber + 1)
-        .then((response) => {
-          this.timeSheet = response.data;
-          this.timeSheet.forEach((time) => {
-            this.tableData[time.index] = time;
-            this.tableData[time.index].place = {
-              name: time.place,
-              id: time.placeId,
-            };
-            this.tableData[time.index].index = time.index + 1;
+          .getTimeSheet(this.userId, this.yNumber, this.mNumber + 1)
+          .then((response) => {
+            this.timeSheet = response.data;
+            this.timeSheet.forEach((time) => {
+              this.tableData[time.index] = time;
+              this.tableData[time.index].place = {
+                name: time.place,
+                id: time.placeId,
+              };
+              this.tableData[time.index].index = time.index + 1;
+            });
+            this.tblKey++;
+            this.isBusy = false;
+          })
+          .catch((error) => {
+            console.log(error);
           });
-          this.tblKey++;
-          this.isBusy = false;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
 
     refreshData() {
@@ -350,32 +351,32 @@ export default {
       this.isBusy = true;
       if (r.place == null || r.from == "" || r.to == "") {
         api
-          .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
-          .then((response) => {
-            console.log("Data deleted: " + response.data);
-            this.refreshData();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .deleteTimeSheet(this.userId, this.yNumber, this.mNumber, r.index)
+            .then((response) => {
+              console.log("Data deleted: " + response.data);
+              this.refreshData();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
       } else {
         api
-          .postTimeSheet(
-            this.userId,
-            r.from,
-            r.to,
-            r.place.id,
-            this.yNumber,
-            this.mNumber,
-            r.index
-          )
-          .then((response) => {
-            console.log("Data saved: " + response.data);
-            this.refreshData();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .postTimeSheet(
+                this.userId,
+                r.from,
+                r.to,
+                r.place.id,
+                this.yNumber,
+                this.mNumber,
+                r.index
+            )
+            .then((response) => {
+              console.log("Data saved: " + response.data);
+              this.refreshData();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
       }
       this.editedRow = null;
     },

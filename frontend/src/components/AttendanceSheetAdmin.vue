@@ -2,7 +2,8 @@
   <div class="container">
     <div class="pb-3">
       <div class="mt-3">
-        <b-nav :tabs="!isMobile" :pills="isMobile" :small="isMobile">
+        <b-nav :tabs="!isMobile" :pills="isMobile" :small="isMobile"
+               :class="{'d-flex justify-content-center' : isMobile}">
           <b-nav-item
               :style="
               isMobile && chosen == index ? ' border: black 1px solid;' : ''

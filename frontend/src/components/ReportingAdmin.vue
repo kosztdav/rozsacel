@@ -40,21 +40,19 @@
           </div>
         </template>
         <template v-slot:cell(hours)="row">
-          {{ row.item.hours }}
           <span v-if="row.item.minutes != 0">
-            :{{ row.item.minutes }}
+            {{ row.item.hours }}:{{ row.item.minutes }}
           </span>
           <span v-else>
-            :00
+            {{ row.item.hours }}:00
           </span>
         </template>
         <template v-slot:cell(weekendHours)="row">
-          {{ row.item.weekendHours }}
           <span v-if="row.item.weekendMinutes != 0">
-            :{{ row.item.weekendMinutes }}
+             {{ row.item.weekendHours }}:{{ row.item.weekendMinutes }}
           </span>
           <span v-else>
-            :00
+             {{ row.item.weekendHours }}:00
           </span>
         </template>
         <template v-slot:cell(weekendWage)="row">
@@ -102,10 +100,16 @@
           {{ weekendWage | currencyFormat }}
         </template>
         <template v-slot:foot(wage)>
-          {{
-            (selectedEmployee.baseWage + normalWage + weekendWage)
-                | currencyFormat
-          }}
+          <div>
+            {{
+              (selectedEmployee.baseWage + normalWage + weekendWage)
+                  | currencyFormat
+            }}
+          </div>
+          <div>
+            Össz: {{ totalHours }}
+          </div>
+
         </template>
       </b-table>
     </div>
@@ -220,6 +224,21 @@ export default {
       }
       return hours + ":" + (minutes != 0 ? minutes : '00');
     },
+    totalHours() {
+      let hours = 0;
+      let minutes = 0;
+      this.reportData.forEach((el) => {
+        hours += el.hours;
+        hours += el.weekendHours;
+        minutes += el.minutes;
+        minutes += el.weekendMinutes;
+      });
+      while (minutes >= 60) {
+        hours++;
+        minutes -= 60;
+      }
+      return hours + ":" + (minutes != 0 ? minutes : '00');
+    },
     normalWage() {
       let hours = 0;
       let minutes = 0;
@@ -229,7 +248,8 @@ export default {
       });
       hours += minutes / 60;
       let wage = hours * this.selectedEmployee.wagePerHour;
-      return wage;
+      let fixedWage = parseInt(wage.toFixed());
+      return fixedWage;
     },
     weekendHours() {
       let weekend = 0;
@@ -253,7 +273,8 @@ export default {
       });
       hours += minutes / 60;
       let wage = hours * this.selectedEmployee.wagePerHour * 1.5;
-      return wage;
+      let fixedWage = parseInt(wage.toFixed());
+      return fixedWage;
     },
   },
   methods: {
@@ -276,13 +297,15 @@ export default {
         minutes = this.reportData[idx].minutes;
         hours += minutes / 60;
         let wage = this.selectedEmployee.wagePerHour * hours;
-        return wage;
+        let fixedWage = parseInt(wage.toFixed());
+        return fixedWage;
       }
       hours = this.reportData[idx].weekendHours;
       minutes = this.reportData[idx].weekendMinutes;
       hours += minutes / 60;
       let wage = this.selectedEmployee.wagePerHour * hours * 1.5;
-      return wage;
+      let fixedWage = parseInt(wage.toFixed());
+      return fixedWage;
     },
     getTotalWageOfPlace(idx) {
       let normalWage = this.getWageOfPlace(idx);
