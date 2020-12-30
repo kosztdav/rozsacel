@@ -1,11 +1,13 @@
 package com.rozsacel.backend.service;
 
 
+import com.rozsacel.backend.domain.Advance;
 import com.rozsacel.backend.domain.Attendance;
 import com.rozsacel.backend.domain.User;
 import com.rozsacel.backend.domain.WorkPlace;
 import com.rozsacel.backend.dto.AttendanceDto;
 import com.rozsacel.backend.dto.WagePerLocationDto;
+import com.rozsacel.backend.repository.AdvanceRepo;
 import com.rozsacel.backend.repository.AttendanceRepo;
 import com.rozsacel.backend.repository.UserRepo;
 import com.rozsacel.backend.repository.WorkPlaceRepo;
@@ -27,6 +29,9 @@ public class BackendService {
 
     @Autowired
     WorkPlaceRepo workPlaceRepo;
+
+    @Autowired
+    AdvanceRepo advanceRepo;
 
     public List<User> getAllUsers() {
 
@@ -139,7 +144,7 @@ public class BackendService {
                 dto.weekendHours = Integer.parseInt(objectArray[3].toString());
                 dto.minutes = Integer.parseInt(objectArray[4].toString());
                 dto.weekendMinutes = Integer.parseInt(objectArray[5].toString());
-                if(!dto.workPlace.equals("Hétvége") && !dto.workPlace.equals("Szabi") && !dto.workPlace.equals("Betegállomány")){
+                if(!dto.workPlace.equals("Hétvége") && !dto.workPlace.equals("Szabi") && !dto.workPlace.equals("Betegállomány")  && !dto.workPlace.equals("Ünnepnap")){
                     dtos.add(dto);
                 }
 
@@ -155,5 +160,9 @@ public class BackendService {
         u.setBaseWage(user.getBaseWage());
         u.setWagePerHour(user.getWagePerHour());
         userRepo.save(u);
+    }
+
+    public void postAdvance(Advance advance){
+        advanceRepo.save(advance);
     }
 }

@@ -7,29 +7,27 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
-@Table(name = "attendance_sheet")
+@Table(name = "cash_advances")
 @NoArgsConstructor
 @ToString
 @Getter
 @Setter
-@IdClass(AttendanceID.class)
 
-public class Attendance {
+public class Advance {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    Integer id;
+
     @ManyToOne
     User user;
 
-    @Id
     LocalDate date;
-
-    LocalTime startTime;
-    LocalTime endTime;
+    Integer amount;
 
     @ManyToOne
-    WorkPlace workPlace;
+    Type type;
 }
-

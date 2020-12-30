@@ -31,14 +31,6 @@
         <template v-slot:cell(workPlace)="row">
           <div class="text-left">{{ row.item.workPlace }}</div>
         </template>
-        <template v-slot:head(days)="row">
-          <div>
-            <div>{{ row.label }}</div>
-            <div>
-              <small class="text-muted">(Összesen)</small>
-            </div>
-          </div>
-        </template>
         <template v-slot:cell(hours)="row">
           <span v-if="row.item.minutes != 0">
             {{ row.item.hours }}:{{ row.item.minutes }}
